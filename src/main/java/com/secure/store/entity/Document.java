@@ -1,5 +1,6 @@
 package com.secure.store.entity;
 
+import com.secure.store.entity.util.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="DOCUMENTS")
+@Table(name="DOCUMENT")
 public class Document {
 
     @Id
@@ -19,15 +20,22 @@ public class Document {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @JoinColumn(name="FOLDERS_ID", referencedColumnName="ID", nullable = false)
+    @JoinColumn(name="FOLDERS_ID", referencedColumnName="ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Folder folder;
 
     @Column(name="NAME", nullable = false)
     private String name;
 
+    @Column(name="ORIGINAL_NAME", nullable = false)
+    private String originalName;
+
     @Column(name="PATH", nullable = false)
     private String path;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUS", nullable = false)
+    private Status status;
 
     @Column(name="SIZE", nullable = false)
     private Long size;

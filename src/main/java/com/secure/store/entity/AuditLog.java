@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="AUDIT_LOGS")
+@Table(name="AUDIT_LOG")
 public class AuditLog {
 
     @Id

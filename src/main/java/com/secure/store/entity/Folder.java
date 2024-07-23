@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="FOLDERS")
+@Table(name="FOLDER")
 public class Folder {
 
     @Id

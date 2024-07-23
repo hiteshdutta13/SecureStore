@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 
 public class FileUtil {
     public static final String FORWARD_SLASH = "/";
+    public static final String DOT = ".";
 
     public static void createDirectory(String directoryPath) {
         Path path = Paths.get(directoryPath);

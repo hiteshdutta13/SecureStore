@@ -1,5 +1,6 @@
 package com.secure.store.entity;
 
+import com.secure.store.entity.util.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="DOCUMENT_VERSIONS")
+@Table(name="DOCUMENT_VERSION")
 public class DocumentVersion {
 
     @Id
@@ -28,8 +29,18 @@ public class DocumentVersion {
     @Column(name="PATH", nullable = false)
     private String path;
 
+    @Column(name="ORIGINAL_NAME", nullable = false)
+    private String originalName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUS", nullable = false)
+    private Status status;
+
     @Column(name="SIZE", nullable = false)
     private Long size;
+
+    @Column(name="CONTENT_TYPE", nullable = false)
+    private String contentType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="CREATED_DATE_TIME", nullable = false)

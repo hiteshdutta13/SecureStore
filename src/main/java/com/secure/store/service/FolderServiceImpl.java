@@ -3,14 +3,16 @@ package com.secure.store.service;
 import com.secure.store.constant.GlobalConstants;
 import com.secure.store.entity.Folder;
 import com.secure.store.modal.Advisory;
+import com.secure.store.modal.DriveDTO;
 import com.secure.store.modal.FolderDTO;
 import com.secure.store.modal.Response;
-import com.secure.store.repository.FoldersRepository;
+import com.secure.store.repository.FolderRepository;
 import com.secure.store.repository.GlobalRepository;
 import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,9 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FolderImpl extends GlobalService implements FolderIf {
+public class FolderServiceImpl extends GlobalService implements FolderServiceIf {
     @Autowired
-    FoldersRepository foldersRepository;
+    FolderRepository folderRepository;
 
     @Autowired
     GlobalRepository globalRepository;
@@ -29,10 +31,10 @@ public class FolderImpl extends GlobalService implements FolderIf {
     public Response create(FolderDTO folderDTO) {
         var response = new Response();
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
-        if(preFix.isPresent() && folderDTO != null) {
+        if(preFix.isPresent() && folderDTO != null && StringUtils.hasText(folderDTO.getName())) {
             var path = FileUtil.FORWARD_SLASH+folderDTO.getName();
             if(folderDTO.getParent() != null && folderDTO.getParent().getId() != null && folderDTO.getParent().getId() > 0) {
-                Optional<Folder> optionalFolder = foldersRepository.findById(folderDTO.getParent().getId());
+                Optional<Folder> optionalFolder = folderRepository.findById(folderDTO.getParent().getId());
                 if(optionalFolder.isPresent()) {
                     path = FileUtil.FORWARD_SLASH+ optionalFolder.get().getPath()+FileUtil.FORWARD_SLASH+folderDTO.getName();
                 }
@@ -44,7 +46,7 @@ public class FolderImpl extends GlobalService implements FolderIf {
             folder.setUser(this.getUser());
             folder.setCreatedDateTime(DateTimeUtil.currentDateTime());
             folder.setUpdateDateTime(folder.getCreatedDateTime());
-            foldersRepository.save(folder);
+            folderRepository.save(folder);
             response.setPersistId(folder.getId());
         }else {
             response = new Response(false);
@@ -58,7 +60,7 @@ public class FolderImpl extends GlobalService implements FolderIf {
     @Override
     public Response rename(FolderDTO folderDTO) {
         if(folderDTO != null && folderDTO.getId() != null && folderDTO.getId() > 0) {
-            Optional<Folder> optionalFolder = foldersRepository.findById(folderDTO.getId());
+            Optional<Folder> optionalFolder = folderRepository.findById(folderDTO.getId());
             if(optionalFolder.isPresent()) {
 
             }
@@ -73,12 +75,15 @@ public class FolderImpl extends GlobalService implements FolderIf {
 
     @Override
     public FolderDTO findBy(Long id) {
-        return transform(foldersRepository.getReferenceById(id));
+        return transform(folderRepository.getReferenceById(id));
     }
 
     @Override
-    public List<FolderDTO> findAll() {
-        return transformList(foldersRepository.findBy(this.getUserId()));
+    public DriveDTO findAll() {
+        var driveDTO = new DriveDTO();
+        driveDTO.setFolders(transformList(folderRepository.findBy(this.getUserId())));
+        driveDTO.setFiles(new ArrayList<>());//TODO
+        return driveDTO;
     }
     List<FolderDTO> transformList(List<Folder> folders) {
        var folderDTOS = new ArrayList<FolderDTO>();
@@ -95,7 +100,7 @@ public class FolderImpl extends GlobalService implements FolderIf {
         folderDTO.setPath(folder.getPath());
         folderDTO.setCreatedDateTime(DateTimeUtil.formatDate(folder.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setUpdatedDateTime(DateTimeUtil.formatDate(folder.getUpdateDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        folderDTO.setSubFolders(transformList(foldersRepository.findBy(this.getUserId(), folder.getId())));
+        folderDTO.setSubFolders(transformList(folderRepository.findBy(this.getUserId(), folder.getId())));
         return folderDTO;
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FoldersRepository extends JpaRepository<Folder, Long> {
+public interface FolderRepository extends JpaRepository<Folder, Long> {
     @Query("SELECT f FROM Folder f WHERE f.user.id = :userId AND f.parent IS NULL")
     List<Folder> findBy(@Param("userId") Long userId);
 

@@ -58,12 +58,18 @@
           </div>
           <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
               <div class="card">
-                <div class="card-header fw-bold"><i class="fa fa-hard-drive text-success"></i> My Drive</div>
-                <h6 class="card-subtitle p-2 text-muted">My Drive</h6>
-                <div class="card-body min-vh-100 driveContent"><!-- Dynamically will be created --> </div>
+                <div class="card-header fw-bold"><i class="fa fa-hard-drive text-success"></i> My Drive
+                    <div class="float-end">
+                        <button class="btn btn-sm btnListView" title="List View"><i class="fa fa-bars"></i></button>
+                        <button class="btn btn-sm btnGridView active" title="Grid View"><i class="fa fa-th-large"></i></button>
+                    </div>
+                </div>
+                <h6 class="card-subtitle p-2 border-bottom text-muted">My Drive</h6>
+                <div class="card-body p-4 driveContent"><!-- Dynamically will be created --> </div>
               </div>
           </div>
         </div>
+        <jsp:include page="footer.jsp"/>
     </div>
     <div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -74,14 +80,15 @@
           </div>
           <div class="modal-body">
             <form>
-              <div class="mb-3">
+              <div class="mb-3 needs-validation">
                 <label for="recipient-name" class="col-form-label">Folder Name:</label>
                 <input type="text" class="form-control" id="folder-name" required />
+                <div class="invalid-feedback">Please enter folder name.</div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary btnCancelFolder" data-bs-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-success btnCreateFolder">Create</button>
           </div>
         </div>
