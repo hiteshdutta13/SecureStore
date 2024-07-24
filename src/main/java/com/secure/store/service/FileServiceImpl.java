@@ -2,7 +2,6 @@ package com.secure.store.service;
 
 import com.secure.store.constant.GlobalConstants;
 import com.secure.store.entity.Document;
-import com.secure.store.entity.Folder;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
 import com.secure.store.modal.Response;
@@ -33,24 +32,24 @@ public class FileServiceImpl extends GlobalService implements FileServiceIf {
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
         if(preFix.isPresent() && file != null) {
             try {
+                var document = new Document();
                 String path = FileUtil.docFilePath(preFix.get().getValue(), this.getUserId());
-                String fileName = System.currentTimeMillis() + FileUtil.DOT + FileUtil.getFileExtension(file.getName());
+                String fileName = System.currentTimeMillis() + FileUtil.DOT + FileUtil.getFileExtension(file.getOriginalFilename());
                 if (folderId > 0) {
-                    Folder folder = folderRepository.getReferenceById(folderId);
-                    path += folder.getPath();
+                    path += folderRepository.getReferenceById(folderId).getPath();
+                    document.setPath(folderRepository.getReferenceById(folderId).getPath());
                 } else {
                     FileUtil.createDirectory(path);
+                    document.setPath("/");
                 }
-                var document = new Document();
                 document.setName(fileName);
                 document.setOriginalName(file.getOriginalFilename());
-                document.setPath(path);
                 document.setContentType(file.getContentType());
                 document.setSize(file.getSize());
                 document.setStatus(Status.Active);
                 document.setUser(this.getUser());
                 document.setCreatedDateTime(DateTimeUtil.currentDateTime());
-                document.setUpdateDateTime(document.getCreatedDateTime());
+                document.setUpdatedDateTime(document.getCreatedDateTime());
                 if (FileUtil.write(file.getBytes(), path, fileName)) {
                     documentRepository.save(document);
                     response.setPersistId(document.getId());

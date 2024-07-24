@@ -42,16 +42,16 @@ public class FileUtil {
         return false;
     }
     public static String getFileExtension(String originalFilename) {
-        if (originalFilename != null && originalFilename.contains(".")) {
-            return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        if (originalFilename != null && originalFilename.contains(DOT)) {
+            return originalFilename.substring(originalFilename.lastIndexOf(DOT) + 1);
         } return "";
     }
 
     public static String docFilePath(String preFix, Long userId) {
-        return docFilePath(preFix) + "/Users/ID" + userId;
+        return docFilePath(preFix) + "/User_" + userId;
     }
 
     public static String docFilePath(String preFix) {
-        return preFix + FORWARD_SLASH  + "/DOC";
+        return preFix + FORWARD_SLASH  + "/SecureStore/Users";
     }
 }

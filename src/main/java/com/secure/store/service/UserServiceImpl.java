@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class UserServiceImpl implements UserServiceIf {
+public class UserServiceImpl extends GlobalService implements UserServiceIf {
     @Autowired
     private UserRepository repository;
 
@@ -46,4 +46,18 @@ public class UserServiceImpl implements UserServiceIf {
     public UserDTO get(Long id) {
         return null;
     }
+
+    @Override
+    public UserDTO getActive() {
+        var userDTO = new UserDTO();
+        var user = repository.getReferenceById(this.getUserId());
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        return userDTO;
+    }
+
+
 }

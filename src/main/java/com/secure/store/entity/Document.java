@@ -49,5 +49,5 @@ public class Document {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="UPDATED_DATE_TIME", nullable = false)
-    private Date updateDateTime;
+    private Date updatedDateTime;
 }

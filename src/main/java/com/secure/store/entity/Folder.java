@@ -15,7 +15,7 @@ public class Folder {
     @Column(name="ID")
     private Long id;
 
-    @JoinColumn(name="USERS_ID", referencedColumnName="ID", nullable = false)
+    @JoinColumn(name="USER_ID", referencedColumnName="ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

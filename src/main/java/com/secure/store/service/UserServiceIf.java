@@ -7,4 +7,5 @@ import org.springframework.http.ResponseEntity;
 public interface UserServiceIf {
     ResponseEntity<Response> register(UserDTO user);
     UserDTO get(Long id);
+    UserDTO getActive();
 }

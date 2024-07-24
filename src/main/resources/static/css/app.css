@@ -1,4 +1,10 @@
 .list-group-item.active {
-    background-color: #2b272c57;
-    border-color: #2b272c57;
+    background-color: #2b272c24;
+    border-color: #2b272c24;
+}
+
+.text-ellipsis {
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
 }

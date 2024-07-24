@@ -26,12 +26,9 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-circle-user fs-3 text-success"></i>
+                       Hello, ${user.firstName}
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li class="dropdown-item"><i class="fas fa-circle-user text-success"></i> Hitesh Dutta</li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="${contextPath}/"><i class="fas fa-sliders-h fa-fw"></i> Account</a></li>
                     <li><a class="dropdown-item" href="${contextPath}/"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a></li>
@@ -48,7 +45,7 @@
                  </button>
                  <ul class="dropdown-menu">
                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="fa fa-folder-plus text-success"></i> New Folder</button></li>
-                   <li><button type="button" class="dropdown-item"><i class="fa fa-file-upload text-success"></i> File Upload</button></li>
+                   <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="fa fa-file-upload text-success"></i> File Upload</button></li>
                  </ul>
                </div>
                <hr>
@@ -90,6 +87,29 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary btnCancelFolder" data-bs-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-success btnCreateFolder">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadFileModalLabel">Upload File</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3 needs-validation">
+                <label for="recipient-name" class="col-form-label">Choose file:</label>
+                <input type="file" class="form-control" id="fileSelected" required />
+                <div class="invalid-feedback">Please choose a file or image.</div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btnCancelFile" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-success btnUploadFile">Upload</button>
           </div>
         </div>
       </div>

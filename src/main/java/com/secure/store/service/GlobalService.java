@@ -1,6 +1,7 @@
 package com.secure.store.service;
 
 import com.secure.store.entity.User;
+import com.secure.store.modal.UserDTO;
 import com.secure.store.security.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,4 +23,5 @@ public class GlobalService {
         user.setId(getUserId());
         return user;
     }
+
 }
