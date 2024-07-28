@@ -25,7 +25,7 @@
             </a>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="nav-link text-dark dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                        Hello, ${user.firstName}
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -50,20 +50,30 @@
                </div>
                <hr>
                <ul class="list-group list-group-flush">
-                 <li class="list-group-item rounded-1 active"><a class="text-decoration-none text-dark" href="${contextPath}/my-drive"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
+                 <li class="list-group-item rounded-5 active"><a class="text-decoration-none text-dark" href="${contextPath}/my-drive"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
                </ul>
           </div>
           <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
               <div class="card">
                 <div class="card-header fw-bold"><i class="fa fa-hard-drive text-success"></i> My Drive
                     <div class="float-end">
-                        <button class="btn btn-sm btnListView" title="List View"><i class="fa fa-bars"></i></button>
-                        <button class="btn btn-sm btnGridView active" title="Grid View"><i class="fa fa-th-large"></i></button>
+                        <button class="btn btn-sm btnView" title="List View" data-value="list"><i class="fa fa-bars"></i></button>
+                        <button class="btn btn-sm btnView active" title="Grid View" data-value="grid"><i class="fa fa-th-large"></i></button>
                     </div>
                 </div>
-                <h6 class="card-subtitle p-2 border-bottom text-muted">My Drive</h6>
-                <div class="card-body p-4 driveContent"><!-- Dynamically will be created --> </div>
+                <div aria-label="breadcrumb" class="row mx-0 px-2">
+                  <ol class="breadcrumb border-bottom p-2"><!--Dynamically --></ol>
+                </div>
+                <div class="card-body p-3 driveContent"><!-- Dynamically will be created --> </div>
               </div>
+          </div>
+        </div>
+        <div class="toast align-items-center float-end" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+                <i class="fa-regular fa-circle-check text-success"></i> <span class="toastMessage">Hello, world! This is a toast message.</spa>
+           </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
         </div>
         <jsp:include page="footer.jsp"/>
@@ -78,8 +88,8 @@
           <div class="modal-body">
             <form>
               <div class="mb-3 needs-validation">
-                <label for="recipient-name" class="col-form-label">Folder Name:</label>
-                <input type="text" class="form-control" id="folder-name" required />
+                <label for="folder-name" class="col-form-label">Folder Name:</label>
+                <input type="text" class="form-control border-dark" id="folder-name" required />
                 <div class="invalid-feedback">Please enter folder name.</div>
               </div>
             </form>
@@ -100,9 +110,8 @@
           </div>
           <div class="modal-body">
             <form>
-              <div class="mb-3 needs-validation">
-                <label for="recipient-name" class="col-form-label">Choose file:</label>
-                <input type="file" class="form-control" id="fileSelected" required />
+              <div class="mb-3 needs-validation pt-3">
+                <input type="file" class="form-control border-dark" id="fileSelected" required />
                 <div class="invalid-feedback">Please choose a file or image.</div>
               </div>
             </form>

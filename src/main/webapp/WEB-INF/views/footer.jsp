@@ -3,6 +3,6 @@
     <span class="mb-3 mb-md-0 text-muted">&copy; 2024 SecureStore, Inc</span>
     </div>
     <div class="col-md-4 justify-content-end text-end text-muted">
-      <span class="mb-3 mb-md-0 text-muted">Developed & Designed by: Hitesh</span>
+      <span class="mb-3 mb-md-0 text-muted"><small>Developed & Designed by: Hitesh</small></span>
     </div>
 </footer>

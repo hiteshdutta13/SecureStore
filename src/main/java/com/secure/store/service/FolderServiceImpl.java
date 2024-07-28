@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FolderServiceImpl extends GlobalService implements FolderServiceIf {
+public class FolderServiceImpl extends GlobalService implements FolderService {
     @Autowired
     FolderRepository folderRepository;
     @Autowired
@@ -38,14 +38,17 @@ public class FolderServiceImpl extends GlobalService implements FolderServiceIf 
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
         if(preFix.isPresent() && folderDTO != null && StringUtils.hasText(folderDTO.getName())) {
             var path = FileUtil.FORWARD_SLASH+folderDTO.getName();
+            var folder = new Folder();
             if(folderDTO.getParent() != null && folderDTO.getParent().getId() != null && folderDTO.getParent().getId() > 0) {
                 Optional<Folder> optionalFolder = folderRepository.findById(folderDTO.getParent().getId());
                 if(optionalFolder.isPresent()) {
-                    path = FileUtil.FORWARD_SLASH+ optionalFolder.get().getPath()+FileUtil.FORWARD_SLASH+folderDTO.getName();
+                    path = optionalFolder.get().getPath()+FileUtil.FORWARD_SLASH+folderDTO.getName();
+                    var parent = new Folder();
+                    parent.setId(folderDTO.getParent().getId());
+                    folder.setParent(parent);
                 }
             }
             FileUtil.createDirectory(FileUtil.docFilePath(preFix.get().getValue(), this.getUserId())+path);
-            var folder = new Folder();
             folder.setName(folderDTO.getName());
             folder.setPath(path);
             folder.setUser(this.getUser());
@@ -64,12 +67,6 @@ public class FolderServiceImpl extends GlobalService implements FolderServiceIf 
 
     @Override
     public Response rename(FolderDTO folderDTO) {
-        if(folderDTO != null && folderDTO.getId() != null && folderDTO.getId() > 0) {
-            Optional<Folder> optionalFolder = folderRepository.findById(folderDTO.getId());
-            if(optionalFolder.isPresent()) {
-
-            }
-        }
         return new Response();
     }
 
@@ -79,8 +76,15 @@ public class FolderServiceImpl extends GlobalService implements FolderServiceIf 
     }
 
     @Override
-    public FolderDTO findBy(Long id) {
-        return transform(folderRepository.getReferenceById(id));
+    public DriveDTO findBy(Long id) {
+        var driveDTO = new DriveDTO();
+        var folder = folderRepository.getReferenceById(id);
+        driveDTO.setFolder(this.transform(folder));
+        Optional<Setting> optionalSetting = settingRepository.findBy(SettingConstants.DRIVE_DEFAULT_VIEW, this.getUserId());
+        driveDTO.setView("grid");
+        optionalSetting.ifPresent(setting -> driveDTO.setView(setting.getValue()));
+        driveDTO.setBreadcrumb(buildFolderBreadcrumb(folder));
+        return driveDTO;
     }
 
     @Override
@@ -88,8 +92,12 @@ public class FolderServiceImpl extends GlobalService implements FolderServiceIf 
         var driveDTO = new DriveDTO();
         driveDTO.setFolders(transformList(folderRepository.findBy(this.getUserId())));
         driveDTO.setFiles(this.transform(documentRepository.findBy(this.getUserId())));
+        driveDTO.setView("grid");
         Optional<Setting> optionalSetting = settingRepository.findBy(SettingConstants.DRIVE_DEFAULT_VIEW, this.getUserId());
         optionalSetting.ifPresent(setting -> driveDTO.setView(setting.getValue()));
+        var breadcrumb = new Breadcrumb();
+        breadcrumb.setName("My Drive");
+        driveDTO.setBreadcrumb(breadcrumb);
         return driveDTO;
     }
     FileDTO transform(Document document) {
@@ -109,16 +117,12 @@ public class FolderServiceImpl extends GlobalService implements FolderServiceIf 
     }
     List<FileDTO> transform(List<Document> documents) {
         var files = new ArrayList<FileDTO>();
-        Optional.ofNullable(documents).orElseGet(Collections::emptyList).forEach(document -> {
-            files.add(transform(document));
-        });
+        Optional.ofNullable(documents).orElseGet(Collections::emptyList).forEach(document -> files.add(transform(document)));
         return files;
     }
     List<FolderDTO> transformList(List<Folder> folders) {
        var folderDTOS = new ArrayList<FolderDTO>();
-       Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> {
-            folderDTOS.add(transform(folder));
-       });
+       Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> folderDTOS.add(transform(folder)));
        return folderDTOS;
     }
 
@@ -132,5 +136,19 @@ public class FolderServiceImpl extends GlobalService implements FolderServiceIf 
         folderDTO.setUpdatedDateTime(DateTimeUtil.formatDate(folder.getUpdateDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setSubFolders(transformList(folderRepository.findBy(this.getUserId(), folder.getId())));
         return folderDTO;
+    }
+
+    Breadcrumb buildFolderBreadcrumb(Folder folder) {
+        var breadcrumb = new Breadcrumb();
+        if(folder.getParent() != null) {
+            breadcrumb.setPrev(buildFolderBreadcrumb(folder.getParent()));
+        }else {
+            var bc = new Breadcrumb();
+            bc.setName("My Drive");
+            breadcrumb.setPrev(bc);
+        }
+        breadcrumb.setId(folder.getId());
+        breadcrumb.setName(folder.getName());
+        return breadcrumb;
     }
 }

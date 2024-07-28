@@ -7,6 +7,8 @@ import java.util.List;
 @Data
 public class DriveDTO {
     private String view;
+    private FolderDTO folder;
     private List<FolderDTO> folders;
     private List<FileDTO> files;
+    private Breadcrumb breadcrumb;
 }

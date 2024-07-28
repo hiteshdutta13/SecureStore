@@ -1,15 +1,13 @@
 package com.secure.store.controller;
 
 import com.secure.store.modal.UserDTO;
-import com.secure.store.service.UserServiceIf;
+import com.secure.store.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,11 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class Register {
     protected final Log logger = LogFactory.getLog(getClass());
     @Autowired
-    private UserServiceIf userServiceIf;
+    private UserService userService;
 
     @PostMapping
     public String registerUser(@ModelAttribute UserDTO userDto, ModelAndView model) {
-        userServiceIf.register(userDto);
+        userService.register(userDto);
         return "redirect:/login";
     }
 

@@ -1,7 +1,7 @@
 package com.secure.store.api;
 
 import com.secure.store.modal.Response;
-import com.secure.store.service.FileServiceIf;
+import com.secure.store.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileAPI {
 
     @Autowired
-    FileServiceIf fileServiceIf;
+    FileService fileService;
 
     @PostMapping(value = "/file/upload/{id}")
     public ResponseEntity<Response> upload( @PathVariable("id") Long folderId,
                                             @RequestParam("file") MultipartFile file) {
-        var response = fileServiceIf.upload(folderId, file);
+        var response = fileService.upload(folderId, file);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {

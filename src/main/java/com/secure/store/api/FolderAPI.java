@@ -2,9 +2,7 @@ package com.secure.store.api;
 
 import com.secure.store.modal.FolderDTO;
 import com.secure.store.modal.Response;
-import com.secure.store.service.FolderServiceIf;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
+import com.secure.store.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class FolderAPI {
     @Autowired
-    private FolderServiceIf folderServiceIf;
-
-    @GetMapping(value = "/folder/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> folder(@PathVariable("id") Long id) {
-        var response = new Response();
-        response.setData(folderServiceIf.findBy(id));
-        return ResponseEntity.ok(response);
-    }
+    private FolderService folderService;
 
     @PostMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> folder(@RequestBody FolderDTO folder) {
-        var response = folderServiceIf.create(folder);
+        var response = folderService.create(folder);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {
@@ -35,7 +26,7 @@ public class FolderAPI {
 
     @PutMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> renameFolder(@RequestBody FolderDTO folder) {
-        var response = folderServiceIf.rename(folder);
+        var response = folderService.rename(folder);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {
@@ -45,7 +36,7 @@ public class FolderAPI {
 
     @DeleteMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> deleteFolder(@RequestBody FolderDTO folder) {
-        var response = folderServiceIf.delete(folder);
+        var response = folderService.delete(folder);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {

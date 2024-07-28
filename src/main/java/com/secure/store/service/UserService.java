@@ -4,7 +4,7 @@ import com.secure.store.modal.Response;
 import com.secure.store.modal.UserDTO;
 import org.springframework.http.ResponseEntity;
 
-public interface UserServiceIf {
+public interface UserService {
     ResponseEntity<Response> register(UserDTO user);
     UserDTO get(Long id);
     UserDTO getActive();

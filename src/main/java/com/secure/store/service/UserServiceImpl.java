@@ -11,10 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
-public class UserServiceImpl extends GlobalService implements UserServiceIf {
+public class UserServiceImpl extends GlobalService implements UserService {
     @Autowired
     private UserRepository repository;
 

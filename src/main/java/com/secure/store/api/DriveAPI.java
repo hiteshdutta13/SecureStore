@@ -2,7 +2,7 @@ package com.secure.store.api;
 
 import com.secure.store.modal.Response;
 import com.secure.store.modal.SettingDTO;
-import com.secure.store.service.FolderServiceIf;
+import com.secure.store.service.FolderService;
 import com.secure.store.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class DriveAPI {
 
     @Autowired
-    FolderServiceIf folderServiceIf;
+    FolderService folderService;
 
     @Autowired
     SettingService settingService;
@@ -22,7 +22,14 @@ public class DriveAPI {
     @GetMapping(value = "/drive", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> drive() {
         var response = new Response();
-        response.setData(folderServiceIf.findAll());
+        response.setData(folderService.findAll());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/drive/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response> drive(@PathVariable("id") Long id) {
+        var response = new Response();
+        response.setData(folderService.findBy(id));
         return ResponseEntity.ok(response);
     }
 

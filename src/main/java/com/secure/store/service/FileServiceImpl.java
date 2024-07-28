@@ -2,6 +2,7 @@ package com.secure.store.service;
 
 import com.secure.store.constant.GlobalConstants;
 import com.secure.store.entity.Document;
+import com.secure.store.entity.Folder;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
 import com.secure.store.modal.Response;
@@ -17,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-public class FileServiceImpl extends GlobalService implements FileServiceIf {
+public class FileServiceImpl extends GlobalService implements FileService {
 
     @Autowired
     FolderRepository folderRepository;
@@ -38,6 +39,9 @@ public class FileServiceImpl extends GlobalService implements FileServiceIf {
                 if (folderId > 0) {
                     path += folderRepository.getReferenceById(folderId).getPath();
                     document.setPath(folderRepository.getReferenceById(folderId).getPath());
+                    var folder = new Folder();
+                    folder.setId(folderId);
+                    document.setFolder(folder);
                 } else {
                     FileUtil.createDirectory(path);
                     document.setPath("/");

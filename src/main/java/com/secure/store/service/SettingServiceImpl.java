@@ -9,6 +9,8 @@ import com.secure.store.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SettingServiceImpl extends GlobalService implements SettingService {
 
@@ -21,8 +23,9 @@ public class SettingServiceImpl extends GlobalService implements SettingService 
         if(settingDTO != null) {
             try {
                 var setting = new Setting();
-                if (settingDTO.getId() != null && settingDTO.getId() > 0) {
-                    setting = settingRepository.getReferenceById(settingDTO.getId());
+                Optional<Setting> optionalSetting = settingRepository.findBy(settingDTO.getKeyword(), this.getUserId());
+                if (optionalSetting.isPresent()) {
+                    setting = optionalSetting.get();
                     setting.setUpdateDateTime(DateTimeUtil.currentDateTime());
                 } else {
                     setting.setCreatedDateTime(DateTimeUtil.currentDateTime());
