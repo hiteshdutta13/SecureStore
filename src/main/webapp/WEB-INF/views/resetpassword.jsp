@@ -12,7 +12,7 @@
     <script src="${contextPath}/js/jquery.min.js"></script>
     <script src="${contextPath}/js/bootstrap.bundle.min.js"></script>
     <script src="${contextPath}/js/ajax.handler.min.js"></script>
-	<title>Secure Store | Login</title>
+	<title>Secure Store | Reset Password</title>
 	<style>
 	.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
         color: var(--bs-nav-pills-link-active-color);
@@ -35,31 +35,29 @@
             <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                 <ul class="nav nav-pills nav-justified" id="myTab" role="tablist">
                   <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-0 rounded-top text-success fw-bold active" id="signin-tab" data-bs-toggle="tab" data-bs-target="#signin-tab-pane" type="button" role="tab" aria-controls="signin-tab-pane" aria-selected="true">Sign In</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <a class="nav-link rounded-0 rounded-top text-success fw-bold" href="${contextPath}/register">Sign Up</a>
+                    <button class="nav-link rounded-0 rounded-top text-success fw-bold active" id="signin-tab" data-bs-toggle="tab" data-bs-target="#signin-tab-pane" type="button" role="tab" aria-controls="signin-tab-pane" aria-selected="true">Reset Password</button>
                   </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
                   <div class="tab-pane pt-3 border-top border-dark container active" id="signin-tab-pane" role="tabpanel" aria-labelledby="signin-tab" tabindex="0">
-                        <form action="<c:url value='/login' />" method="post" class="needs-validation">
-                              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                              <div class="mb-3 mt-3">
-                                <label for="username" class="form-label">Username:</label>
-                                <input type="text" class="form-control" id="signInUsername" placeholder="Enter username" name="username" required>
-                              </div>
-                              <div class="mb-3">
-                                <label for="password" class="form-label">Password:</label>
-                                <input type="password" class="form-control" id="signInPassword" placeholder="Enter password" name="password" required>
-                              </div>
-                              <div class="mb-3">
-                                <a href="${contextPath}/reset/password" class="text-decoration-none"> Forgot password ?</a>
-                              </div>
-                              <div class="mb-3">
-                                    <button type="submit" class="btn btn-success">Login</button>
-                              </div>
-                        </form>
+                        <c:choose>
+                            <c:when test="${page eq 'email'}">
+                                <form action="<c:url value='/reset/password/email' />" method="post" class="needs-validation">
+                                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                      <div class="mb-3 mt-3">
+                                        <label for="emailAddress" class="form-label">Email:</label>
+                                        <input type="email" class="form-control ${message ? 'is-invalid':''}" id="emailAddress" placeholder="Enter registered email" name="email" required>
+                                        <div class="invalid-feedback">${message}</div>
+                                      </div>
+                                      <div class="mb-3">
+                                           <button type="submit" class="btn btn-success">Continue</button>
+                                      </div>
+                                </form>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="alert alert-success" role="alert">${message}</div>
+                            </c:otherwise>
+                        </c:choose>
                   </div>
                 </div>
             </div>

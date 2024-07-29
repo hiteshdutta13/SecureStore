@@ -8,4 +8,6 @@ public interface UserService {
     ResponseEntity<Response> register(UserDTO user);
     UserDTO get(Long id);
     UserDTO getActive();
+    Response resetPassword(String email);
+    Response validate(String token);
 }

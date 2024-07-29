@@ -1,20 +1,39 @@
 package com.secure.store.service;
 
 import com.secure.store.entity.User;
+import com.secure.store.entity.UserRequest;
+import com.secure.store.entity.util.RequestType;
+import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
 import com.secure.store.modal.Response;
 import com.secure.store.modal.UserDTO;
 import com.secure.store.repository.UserRepository;
+import com.secure.store.repository.UserRequestRepository;
 import com.secure.store.util.DateTimeUtil;
+import com.secure.store.util.EmailUtil;
+import com.secure.store.util.TokenUtil;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl extends GlobalService implements UserService {
     @Autowired
-    private UserRepository repository;
+    UserRepository repository;
+    @Autowired
+    UserRequestRepository userRequestRepository;
+    @Autowired
+    JavaMailSender javaMailSender;
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     @Override
     public ResponseEntity<Response> register(UserDTO user) {
@@ -55,6 +74,55 @@ public class UserServiceImpl extends GlobalService implements UserService {
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         return userDTO;
+    }
+
+    @Override
+    public Response resetPassword(String email) {
+        var response = new Response();
+        Optional<User> optionalUser =  repository.findByEmail(email);
+        if(optionalUser.isPresent()) {
+            try {
+                var userRequest = new UserRequest();
+                Optional<UserRequest> optionalUserRequest = userRequestRepository.findBy(optionalUser.get().getId(), RequestType.ResetPassword, Status.Active);
+                if (optionalUserRequest.isPresent()) {
+                    var existingRequest = optionalUserRequest.get();
+                    existingRequest.setStatus(Status.Deleted);
+                    userRequestRepository.save(existingRequest);
+                }
+                userRequest.setUser(optionalUser.get());
+                userRequest.setType(RequestType.ResetPassword);
+                userRequest.setStatus(Status.Active);
+                userRequest.setCreatedDateTime(DateTimeUtil.currentDateTime());
+                userRequest.setToken(TokenUtil.generateToken());
+                userRequest.setCode(TokenUtil.generate6DigitCode());
+                userRequestRepository.save(userRequest);
+                MimeMessage message = javaMailSender.createMimeMessage();
+                var helper = new MimeMessageHelper(message, true);
+                helper.setTo(email);
+                helper.setSubject("Password Reset");
+                helper.setText(EmailUtil.buildEmailContent(httpServletRequest, optionalUser.get(), userRequest.getToken()), true); // Set the HTML content to true
+                javaMailSender.send(message);
+                response.addMessage("A password reset link has been sent to your registered email address. Please check your email and follow the instructions to reset your password. If you do not see the email, please check your spam or junk folder.");
+            }catch (Exception e) {
+                response.setSuccess(false);
+                response.addMessage(e.getMessage());
+            }
+        }else {
+            response.setSuccess(false);
+            response.addMessage("We couldn't find an account associated with this email address.");
+        }
+        return response;
+    }
+
+    @Override
+    public Response validate(String token) {
+        var response = new Response();
+        Optional<UserRequest> optionalUserRequest = userRequestRepository.findBy(token,  RequestType.ResetPassword, Status.Active);
+        if(optionalUserRequest.isEmpty()) {
+            response.setSuccess(false);
+            response.addMessage("Your password reset link has expired. Please request a new password reset link.");
+        }
+        return response;
     }
 
 

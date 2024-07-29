@@ -17,4 +17,14 @@ public class Response {
     public Response(boolean success) {
         this.success = success;
     }
+    public void addMessage(String message) {
+        var advisory = new Advisory();
+        advisory.setMessage(message);
+        advisories.add(advisory);
+    }
+    public String getMessage() {
+        if(!advisories.isEmpty()) {
+            return advisories.get(0).getMessage();
+        } return null;
+    }
 }
