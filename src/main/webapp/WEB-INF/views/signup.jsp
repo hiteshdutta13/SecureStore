@@ -43,7 +43,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                   <div class="tab-pane border-top border-dark pt-3 container active" id="signup-tab-pane" role="tabpanel" aria-labelledby="signup-tab" tabindex="0">
-                        <form action="<c:url value='/register' />" method="post" class="needs-validation">
+                        <form action="<c:url value='/register' />" method="post" class="needs-validation" autocomplete="off">
                               <div class="mb-3 mt-3">
                                 <label for="firstName" class="form-label">First Name:</label>
                                 <input type="text" class="form-control" name="firstName" placeholder="Enter first name" required>
@@ -65,7 +65,6 @@
                                 <input type="password" class="form-control" name="password" placeholder="Enter password" required>
                               </div>
                               <div class="mb-3">
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                     <button type="submit" class="btn btn-success">Register</button>
                               </div>
                         </form>

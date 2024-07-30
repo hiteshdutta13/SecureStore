@@ -1,5 +1,6 @@
 package com.secure.store.controller;
 
+import com.secure.store.constant.PageConstants;
 import com.secure.store.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,20 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PageController {
-    protected final Log logger = LogFactory.getLog(getClass());
     @Autowired
     UserService userService;
     @GetMapping("/")
-    public String home(HttpServletRequest req, HttpServletResponse res, Model model) {
-        model.addAttribute("currentView", "home");
-        model.addAttribute("user", userService.getActive());
-        return "index";
+    public String home(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Model model) {
+        model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
+        return PageConstants.PAGE_INDEX;
     }
 
     @GetMapping("/my-drive")
-    public String drive(HttpServletRequest req, HttpServletResponse res, Model model) {
-        model.addAttribute("currentView", "drive");
-        model.addAttribute("user", userService.getActive());
-        return "index";
+    public String drive(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Model model) {
+        model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
+        return PageConstants.PAGE_INDEX;
     }
 }

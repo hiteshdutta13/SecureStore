@@ -5,6 +5,7 @@ import com.secure.store.entity.UserRequest;
 import com.secure.store.entity.util.RequestType;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
+import com.secure.store.modal.ResetPasswordDTO;
 import com.secure.store.modal.Response;
 import com.secure.store.modal.UserDTO;
 import com.secure.store.repository.UserRepository;
@@ -13,7 +14,6 @@ import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.EmailUtil;
 import com.secure.store.util.TokenUtil;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -125,5 +129,50 @@ public class UserServiceImpl extends GlobalService implements UserService {
         return response;
     }
 
+    @Override
+    public List<UserDTO> filter(String email) {
+        List<UserDTO> userDTOS = new ArrayList<>();
+        if(StringUtils.hasText(email)) {
+            Optional.ofNullable(repository.filterEmail("%" + email + "%")).orElseGet(Collections::emptyList).stream().filter(user -> user.getId().longValue() != this.getUserId().longValue()).forEach(user -> {
+                var userDTO = new UserDTO();
+                userDTO.setId(user.getId());
+                userDTO.setUsername(user.getUsername());
+                userDTO.setEmail(user.getEmail());
+                userDTO.setFirstName(user.getFirstName());
+                userDTO.setLastName(user.getLastName());
+                userDTOS.add(userDTO);
+            });
+        }
+        return userDTOS;
+    }
+
+    @Override
+    public Response changePassword(ResetPasswordDTO resetPasswordDTO) {
+        var response = new Response();
+        if(resetPasswordDTO != null && StringUtils.hasText(resetPasswordDTO.getToken())) {
+            if(StringUtils.hasText(resetPasswordDTO.getNewPassword()) && !resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmPassword())) {
+                response.setSuccess(false);
+                response.addMessage("Passwords do not match.");
+            }else if(!TokenUtil.validatePassword(resetPasswordDTO.getConfirmPassword())){
+                response.setSuccess(false);
+                response.addMessage(TokenUtil.getErrorMessage(resetPasswordDTO.getConfirmPassword()));
+            }else {
+                Optional<UserRequest> optionalUserRequest = userRequestRepository.findBy(resetPasswordDTO.getToken(),  RequestType.ResetPassword, Status.Active);
+                if(optionalUserRequest.isPresent()) {
+                    var user = optionalUserRequest.get().getUser();
+                    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                    String encodedPassword = passwordEncoder.encode(user.getPassword());
+                    user.setPassword(encodedPassword);
+                    user.setUpdateDateTime(DateTimeUtil.currentDateTime());
+                    repository.save(user);
+                    response.addMessage("Password has been reset successfully.");
+                }else {
+                    response.setSuccess(false);
+                    response.addMessage("Your password reset link has expired. Please request a new password reset link.");
+                }
+            }
+        }
+        return response;
+    }
 
 }

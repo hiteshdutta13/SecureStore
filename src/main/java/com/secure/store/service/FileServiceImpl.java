@@ -1,12 +1,16 @@
 package com.secure.store.service;
 
 import com.secure.store.constant.GlobalConstants;
-import com.secure.store.entity.Document;
+import com.secure.store.entity.File;
 import com.secure.store.entity.Folder;
+import com.secure.store.entity.SharedFile;
+import com.secure.store.entity.User;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
 import com.secure.store.modal.Response;
-import com.secure.store.repository.DocumentRepository;
+import com.secure.store.modal.SharedFileDTO;
+import com.secure.store.repository.FileRepository;
+import com.secure.store.repository.SharedFileRepository;
 import com.secure.store.repository.FolderRepository;
 import com.secure.store.repository.GlobalRepository;
 import com.secure.store.util.DateTimeUtil;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class FileServiceImpl extends GlobalService implements FileService {
@@ -25,7 +30,9 @@ public class FileServiceImpl extends GlobalService implements FileService {
     @Autowired
     GlobalRepository globalRepository;
     @Autowired
-    DocumentRepository documentRepository;
+    FileRepository fileRepository;
+    @Autowired
+    SharedFileRepository sharedFileRepository;
 
     @Override
     public Response upload(Long folderId, MultipartFile file) {
@@ -33,7 +40,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
         if(preFix.isPresent() && file != null) {
             try {
-                var document = new Document();
+                var document = new File();
                 String path = FileUtil.docFilePath(preFix.get().getValue(), this.getUserId());
                 String fileName = System.currentTimeMillis() + FileUtil.DOT + FileUtil.getFileExtension(file.getOriginalFilename());
                 if (folderId > 0) {
@@ -55,7 +62,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
                 document.setCreatedDateTime(DateTimeUtil.currentDateTime());
                 document.setUpdatedDateTime(document.getCreatedDateTime());
                 if (FileUtil.write(file.getBytes(), path, fileName)) {
-                    documentRepository.save(document);
+                    fileRepository.save(document);
                     response.setPersistId(document.getId());
                 }else {
                     response = new Response(false);
@@ -72,8 +79,35 @@ public class FileServiceImpl extends GlobalService implements FileService {
         }else {
             response = new Response(false);
             var advisory = new Advisory();
-            advisory.setMessage("Document pre-fix path not configured");
+            advisory.setMessage("File pre-fix path not configured");
             response.getAdvisories().add(advisory);
+        }
+        return response;
+    }
+
+    @Override
+    public Response share(SharedFileDTO sharedFileDTO) {
+        var response = new Response();
+        if(sharedFileDTO != null && sharedFileDTO.getFile() != null && sharedFileDTO.getFile().getId() != null && sharedFileDTO.getToUser() != null && sharedFileDTO.getToUser().getId() != null) {
+            Optional<SharedFile> optionalSharedFile = sharedFileRepository.findBy(sharedFileDTO.getToUser().getId(), this.getUserId(), sharedFileDTO.getFile().getId());
+            if(optionalSharedFile.isEmpty()) {
+                var sharedFile = new SharedFile();
+                var file = new File();
+                file.setId(sharedFileDTO.getFile().getId());
+                sharedFile.setFile(file);
+                sharedFile.setSharedBy(this.getUser());
+                var sharedTo = new User();
+                sharedTo.setId(sharedFileDTO.getToUser().getId());
+                sharedFile.setSharedTo(sharedTo);
+                sharedFile.setSharedDateTime(DateTimeUtil.currentDateTime());
+                sharedFileRepository.save(sharedFile);
+            }else {
+                response.setSuccess(false);
+                response.addMessage("File already shared with this user.");
+            }
+        }else {
+            response.setSuccess(false);
+            response.addMessage("Error occurred while sharing the file.");
         }
         return response;
     }

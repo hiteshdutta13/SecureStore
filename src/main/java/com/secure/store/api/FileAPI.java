@@ -1,6 +1,7 @@
 package com.secure.store.api;
 
 import com.secure.store.modal.Response;
+import com.secure.store.modal.SharedFileDTO;
 import com.secure.store.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,4 +25,16 @@ public class FileAPI {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @PostMapping(value = "/file/share")
+    public ResponseEntity<Response> share( @RequestBody SharedFileDTO sharedFileDTO) {
+        var response = fileService.share(sharedFileDTO);
+        if(response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
 }

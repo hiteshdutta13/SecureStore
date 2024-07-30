@@ -8,29 +8,30 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="DOCUMENT_VERSION")
-public class DocumentVersion {
+@Table(name="FILE")
+public class File {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="ID")
     private Long id;
 
-    @JoinColumn(name="DOCUMENT_ID", referencedColumnName="ID", nullable = false)
+    @JoinColumn(name="USER_ID", referencedColumnName="ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Document document;
+    private User user;
 
-    @Column(name="VERSION_NUMBER", nullable = false)
-    private Integer versionNumber;
+    @JoinColumn(name="FOLDER_ID", referencedColumnName="ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Folder folder;
 
     @Column(name="NAME", nullable = false)
     private String name;
 
-    @Column(name="PATH", nullable = false)
-    private String path;
-
     @Column(name="ORIGINAL_NAME", nullable = false)
     private String originalName;
+
+    @Column(name="PATH", nullable = false)
+    private String path;
 
     @Enumerated(EnumType.STRING)
     @Column(name="STATUS", nullable = false)
@@ -45,4 +46,8 @@ public class DocumentVersion {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="CREATED_DATE_TIME", nullable = false)
     private Date createdDateTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="UPDATED_DATE_TIME", nullable = false)
+    private Date updatedDateTime;
 }

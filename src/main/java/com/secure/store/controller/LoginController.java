@@ -1,5 +1,6 @@
 package com.secure.store.controller;
 
+import com.secure.store.constant.PageConstants;
 import com.secure.store.modal.UserDTO;
 import com.secure.store.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,9 +21,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginController {
 
     @GetMapping
-    public String loginPage(HttpServletRequest req, HttpServletResponse res, Model model) {
-        model.addAttribute("user", new UserDTO());
-        return "signin";
+    public String loginPage(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Model model) {
+        model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
+        return PageConstants.PAGE_SIGN_IN;
     }
 
 }

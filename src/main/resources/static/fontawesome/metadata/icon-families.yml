@@ -19149,7 +19149,7 @@ file:
   label: File
   search:
     terms:
-      - Empty Document
+      - Empty File
       - cv
       - document
       - new
@@ -19604,7 +19604,7 @@ file-image:
   label: File Image
   search:
     terms:
-      - Document with Picture
+      - File with Picture
       - document
       - image
       - img
@@ -19749,8 +19749,8 @@ file-lines:
   label: File Lines
   search:
     terms:
-      - Document
-      - Document with Text
+      - File
+      - File with Text
       - document
       - file-text
       - invoice

@@ -2,14 +2,9 @@ package com.secure.store.service;
 
 import com.secure.store.constant.GlobalConstants;
 import com.secure.store.constant.SettingConstants;
-import com.secure.store.entity.Document;
-import com.secure.store.entity.Folder;
-import com.secure.store.entity.Setting;
+import com.secure.store.entity.*;
 import com.secure.store.modal.*;
-import com.secure.store.repository.DocumentRepository;
-import com.secure.store.repository.FolderRepository;
-import com.secure.store.repository.GlobalRepository;
-import com.secure.store.repository.SettingRepository;
+import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +23,11 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
     @Autowired
     GlobalRepository globalRepository;
     @Autowired
-    DocumentRepository documentRepository;
+    FileRepository fileRepository;
     @Autowired
     SettingRepository settingRepository;
+    @Autowired
+    SharedFileRepository sharedFileRepository;
 
     @Override
     public Response create(FolderDTO folderDTO) {
@@ -59,7 +56,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         }else {
             response = new Response(false);
             var advisory = new Advisory();
-            advisory.setMessage("Document pre-fix path not configured");
+            advisory.setMessage("File pre-fix path not configured");
             response.getAdvisories().add(advisory);
         }
         return response;
@@ -90,17 +87,39 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
     @Override
     public DriveDTO findAll() {
         var driveDTO = new DriveDTO();
-        driveDTO.setFolders(transformList(folderRepository.findBy(this.getUserId())));
-        driveDTO.setFiles(this.transform(documentRepository.findBy(this.getUserId())));
+        driveDTO.setFolders(this.transformList(folderRepository.findBy(this.getUserId())));
+        driveDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId())));
         driveDTO.setView("grid");
         Optional<Setting> optionalSetting = settingRepository.findBy(SettingConstants.DRIVE_DEFAULT_VIEW, this.getUserId());
         optionalSetting.ifPresent(setting -> driveDTO.setView(setting.getValue()));
         var breadcrumb = new Breadcrumb();
         breadcrumb.setName("My Drive");
         driveDTO.setBreadcrumb(breadcrumb);
+        driveDTO.setSharedFiles(this.sharedFiles(sharedFileRepository.findBy(this.getUserId())));
         return driveDTO;
     }
-    FileDTO transform(Document document) {
+    UserDTO transform(User user) {
+        var userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        return userDTO;
+    }
+    List<SharedFileDTO> sharedFiles(List<SharedFile> sharedFiles) {
+        var files = new ArrayList<SharedFileDTO>();
+        Optional.ofNullable(sharedFiles).orElseGet(Collections::emptyList).forEach(documentShare -> {
+            var sharedFile = new SharedFileDTO();
+            sharedFile.setFile(this.transform(documentShare.getFile()));
+            sharedFile.setId(documentShare.getId());
+            sharedFile.setSharedBy(this.transform(documentShare.getSharedBy()));
+            sharedFile.setSharedDateTime(DateTimeUtil.formatDate(documentShare.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+            files.add(sharedFile);
+        });
+        return files;
+    }
+    FileDTO transform(File document) {
         var file = new FileDTO();
         file.setId(document.getId());
         file.setName(document.getName());
@@ -115,14 +134,14 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         file.setUpdatedDateTime(DateTimeUtil.formatDate(document.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         return file;
     }
-    List<FileDTO> transform(List<Document> documents) {
+    List<FileDTO> transform(List<File> documents) {
         var files = new ArrayList<FileDTO>();
-        Optional.ofNullable(documents).orElseGet(Collections::emptyList).forEach(document -> files.add(transform(document)));
+        Optional.ofNullable(documents).orElseGet(Collections::emptyList).forEach(document -> files.add(this.transform(document)));
         return files;
     }
     List<FolderDTO> transformList(List<Folder> folders) {
        var folderDTOS = new ArrayList<FolderDTO>();
-       Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> folderDTOS.add(transform(folder)));
+       Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> folderDTOS.add(this.transform(folder)));
        return folderDTOS;
     }
 
@@ -131,7 +150,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         folderDTO.setId(folder.getId());
         folderDTO.setName(folder.getName());
         folderDTO.setPath(folder.getPath());
-        folderDTO.setFiles(this.transform(documentRepository.findBy(this.getUserId(), folder.getId())));
+        folderDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId(), folder.getId())));
         folderDTO.setCreatedDateTime(DateTimeUtil.formatDate(folder.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setUpdatedDateTime(DateTimeUtil.formatDate(folder.getUpdateDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setSubFolders(transformList(folderRepository.findBy(this.getUserId(), folder.getId())));

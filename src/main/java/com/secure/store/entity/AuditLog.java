@@ -21,7 +21,7 @@ public class AuditLog {
 
     @JoinColumn(name="DOCUMENT_ID", referencedColumnName="ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Document document;
+    private File file;
 
     @Column(name="ACTION", nullable = false)
     private String action;

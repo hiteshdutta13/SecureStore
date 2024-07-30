@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class DriveAPI {
-
     @Autowired
     FolderService folderService;
-
     @Autowired
     SettingService settingService;
 

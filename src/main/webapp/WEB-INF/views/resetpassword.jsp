@@ -42,8 +42,7 @@
                   <div class="tab-pane pt-3 border-top border-dark container active" id="signin-tab-pane" role="tabpanel" aria-labelledby="signin-tab" tabindex="0">
                         <c:choose>
                             <c:when test="${page eq 'email'}">
-                                <form action="<c:url value='/reset/password/email' />" method="post" class="needs-validation">
-                                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <form action="<c:url value='/reset/password/email' />" method="post" class="needs-validation" autocomplete="off">
                                       <div class="mb-3 mt-3">
                                         <label for="emailAddress" class="form-label">Email:</label>
                                         <input type="email" class="form-control ${message ? 'is-invalid':''}" id="emailAddress" placeholder="Enter registered email" name="email" required>
@@ -54,8 +53,36 @@
                                       </div>
                                 </form>
                             </c:when>
+                            <c:when test="${page eq 'change'}">
+                                <form action="<c:url value='/reset/password/change' />" method="post" class="needs-validation" autocomplete="off">
+                                      <input type="hidden" name="token" value="${token}" />
+                                      <div class="mb-3 mt-3">
+                                        <label for="newPassword" class="form-label">New Password:</label>
+                                        <input type="text" class="form-control" id="newPassword" placeholder="Enter new password" name="newPassword" autocomplete="off" required>
+                                       </div>
+                                      <div class="mb-3 mt-3">
+                                          <label for="confirmPassword" class="form-label">Confirm New Password:</label>
+                                          <input type="password" class="form-control" id="confirmPassword" placeholder="Enter new password" name="confirmPassword" autocomplete="off" required>
+                                      </div>
+                                      <div class="mb-3">
+                                           <button type="submit" class="btn btn-success">Reset Password</button>
+                                      </div>
+                                      <c:if test="${not empty message}">
+                                         <div class="alert alert-danger">${message}</div>
+                                      </c:if>
+                                </form>
+                            </c:when>
+                            <c:when test="${page eq 'success'}">
+                                <div class="alert alert-success" role="alert">${message}</div>
+                                <a href="${contextPath}" class="btn btn-success">Click here to sign in</a>
+                            </c:when>
+                            <c:when test="${page eq 'expired'}">
+                                <div class="alert alert-danger" role="alert">${message}</div>
+                                <a href="${contextPath}" class="btn btn-success">Go to Home page</a>
+                            </c:when>
                             <c:otherwise>
                                 <div class="alert alert-success" role="alert">${message}</div>
+                                <a href="${contextPath}" class="btn btn-success">Go to Home page</a>
                             </c:otherwise>
                         </c:choose>
                   </div>

@@ -50,7 +50,7 @@
                </div>
                <hr>
                <ul class="list-group list-group-flush">
-                 <li class="list-group-item rounded-5 active"><a class="text-decoration-none text-dark" href="${contextPath}/my-drive"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
+                 <li class="list-group-item rounded-5 active"><a class="text-decoration-none text-dark" href="${contextPath}/"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
                </ul>
           </div>
           <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-10">

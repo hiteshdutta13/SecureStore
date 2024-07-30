@@ -18,4 +18,5 @@ public interface UserRequestRepository extends JpaRepository<UserRequest, Long> 
 
     @Query("SELECT ur FROM UserRequest ur WHERE ur.token = :token AND ur.type = :type AND ur.status = :status")
     Optional<UserRequest> findBy(@Param("token") String token, @Param("type") RequestType type, @Param("status") Status status);
+
 }

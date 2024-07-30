@@ -43,8 +43,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                   <div class="tab-pane pt-3 border-top border-dark container active" id="signin-tab-pane" role="tabpanel" aria-labelledby="signin-tab" tabindex="0">
-                        <form action="<c:url value='/login' />" method="post" class="needs-validation">
-                              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <form action="<c:url value='/login' />" method="post" class="needs-validation" autocomplete="off">
                               <div class="mb-3 mt-3">
                                 <label for="username" class="form-label">Username:</label>
                                 <input type="text" class="form-control" id="signInUsername" placeholder="Enter username" name="username" required>
