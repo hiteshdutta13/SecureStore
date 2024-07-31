@@ -28,7 +28,7 @@
                   <a class="nav-link text-dark dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                        Hello, ${user.firstName}
                   </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="${contextPath}/"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a></li>
@@ -86,13 +86,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form>
               <div class="mb-3 needs-validation">
                 <label for="folder-name" class="col-form-label">Folder Name:</label>
                 <input type="text" class="form-control border-dark" id="folder-name" required />
                 <div class="invalid-feedback">Please enter folder name.</div>
               </div>
-            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary btnCancelFolder" data-bs-dismiss="modal">Cancel</button>
@@ -109,16 +107,27 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form>
               <div class="mb-3 needs-validation pt-3">
                 <input type="file" class="form-control border-dark" id="fileSelected" required />
                 <div class="invalid-feedback">Please choose a file or image.</div>
               </div>
-            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary btnCancelFile" data-bs-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-success btnUploadFile">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="imageViewModal" tabindex="-1" aria-labelledby="imageViewModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imageViewModalLabel">Upload File</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <img src="..." class="img-fluid" alt="..."/>
           </div>
         </div>
       </div>

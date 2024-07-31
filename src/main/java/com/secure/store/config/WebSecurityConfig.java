@@ -37,7 +37,7 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
-        http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.requestMatchers("/", "/my-drive", "/api/**").authenticated().anyRequest().permitAll())
+        http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.requestMatchers("/", "/my-drive", "/api/**", "/js/**").authenticated().anyRequest().permitAll())
         .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/").permitAll())
         .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/").invalidateHttpSession(true).deleteCookies("JSESSIONID"));
         return http.build();

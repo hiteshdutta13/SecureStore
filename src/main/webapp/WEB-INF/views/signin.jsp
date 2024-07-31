@@ -9,9 +9,6 @@
     <c:set var="contextPath" value="${pageContext.request.contextPath}" scope="session"/>
     <link rel="stylesheet" href="${contextPath}/css/bootstrap.min.css">
     <link rel="shortcut icon" href="${contextPath}/images/secure-store-icon.webp" />
-    <script src="${contextPath}/js/jquery.min.js"></script>
-    <script src="${contextPath}/js/bootstrap.bundle.min.js"></script>
-    <script src="${contextPath}/js/ajax.handler.min.js"></script>
 	<title>Secure Store | Login</title>
 	<style>
 	.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
