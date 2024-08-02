@@ -8,7 +8,7 @@ public class PageConstants {
 
     public static final String ATTRIBUTE_USER = "user";
     public static final String ATTRIBUTE_PAGE = "page";
-    public static final String ATTRIBUTE_MESSAGE = "page";
+    public static final String ATTRIBUTE_MESSAGE = "message";
 
 
 }

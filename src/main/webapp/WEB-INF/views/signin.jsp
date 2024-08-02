@@ -42,12 +42,12 @@
                   <div class="tab-pane pt-3 border-top border-dark container active" id="signin-tab-pane" role="tabpanel" aria-labelledby="signin-tab" tabindex="0">
                         <form action="<c:url value='/login' />" method="post" class="needs-validation" autocomplete="off">
                               <div class="mb-3 mt-3">
-                                <label for="username" class="form-label">Username:</label>
-                                <input type="text" class="form-control" id="signInUsername" placeholder="Enter username" name="username" required>
+                                <label for="signInUsername" class="form-label">Username:</label>
+                                <input type="text" class="form-control" id="signInUsername" placeholder="Enter username" name="username" autocomplete="off" required>
                               </div>
                               <div class="mb-3">
-                                <label for="password" class="form-label">Password:</label>
-                                <input type="password" class="form-control" id="signInPassword" placeholder="Enter password" name="password" required>
+                                <label for="signInPassword" class="form-label">Password:</label>
+                                <input type="password" class="form-control" id="signInPassword" placeholder="Enter password" name="password" autocomplete="off" required>
                               </div>
                               <div class="mb-3">
                                 <a href="${contextPath}/reset/password" class="text-decoration-none"> Forgot password ?</a>

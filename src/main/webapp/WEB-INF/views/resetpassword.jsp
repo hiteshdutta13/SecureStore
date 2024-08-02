@@ -47,6 +47,7 @@
                                       </div>
                                       <div class="mb-3">
                                            <button type="submit" class="btn btn-success">Continue</button>
+                                           <a href="${contextPath}" class="btn btn-secondary">Cancel</a>
                                       </div>
                                 </form>
                             </c:when>

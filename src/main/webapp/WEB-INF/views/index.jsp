@@ -111,7 +111,7 @@
           </div>
           <div class="modal-body">
               <div class="mb-3 needs-validation pt-3">
-                <input type="file" class="form-control border-dark" id="fileSelected" required />
+                <input type="file" class="form-control border-dark" id="fileSelected" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.xls,.xlsx" required />
                 <div class="invalid-feedback">Please choose a file or image.</div>
               </div>
           </div>
@@ -126,7 +126,7 @@
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="fileViewModalLabel">File View</h5>
+            <h5 class="modal-title" id="fileViewModalLabel"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body"><!-- Dynamically --></div>

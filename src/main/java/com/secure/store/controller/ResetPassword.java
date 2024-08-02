@@ -4,8 +4,6 @@ import com.secure.store.constant.PageConstants;
 import com.secure.store.modal.ResetPasswordDTO;
 import com.secure.store.modal.UserDTO;
 import com.secure.store.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +17,7 @@ public class ResetPassword {
     UserService userService;
 
     @GetMapping
-    public String forgotPass(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Model model) {
+    public String askForEmail(Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
         model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "email");
         model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, "");
@@ -27,7 +25,7 @@ public class ResetPassword {
     }
 
     @GetMapping("/change")
-    public String resetPass(@RequestParam("token") String token, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Model model) {
+    public String askToResetPassword(@RequestParam("token") String token, Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
         model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, "");
         var response = userService.validate(token);
@@ -42,7 +40,7 @@ public class ResetPassword {
     }
 
     @PostMapping("/change")
-    public String resetPassC(@ModelAttribute ResetPasswordDTO resetPassword, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Model model) {
+    public String changePassword(@ModelAttribute ResetPasswordDTO resetPassword, Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
         model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, "");
         var response = userService.changePassword(resetPassword);
@@ -55,8 +53,8 @@ public class ResetPassword {
         return PageConstants.PAGE_RESET_PASSWORD;
     }
 
-    @PostMapping(value = "/email")
-    public String forgotPassE(@ModelAttribute UserDTO userDto, Model model) {
+    @PostMapping("/email")
+    public String sendResetLinkToEmail(@ModelAttribute UserDTO userDto, Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
         var response = userService.resetPassword(userDto.getEmail());
         if(response.isSuccess()) {

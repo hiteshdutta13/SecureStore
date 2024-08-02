@@ -43,23 +43,23 @@
                         <form action="<c:url value='/register' />" method="post" class="needs-validation" autocomplete="off">
                               <div class="mb-3 mt-3">
                                 <label for="firstName" class="form-label">First Name:</label>
-                                <input type="text" class="form-control" name="firstName" placeholder="Enter first name" required>
+                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" autocomplete="off" required>
                               </div>
                               <div class="mb-3 mt-3">
                                   <label for="lastName" class="form-label">Last Name:</label>
-                                  <input type="text" class="form-control" name="lastName" placeholder="Enter last name" required>
+                                  <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name" autocomplete="off" required>
                               </div>
                               <div class="mb-3 mt-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="text" class="form-control" name="email" placeholder="Enter email" required>
+                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter email" autocomplete="off" required>
                               </div>
                               <div class="mb-3 mt-3">
                                 <label for="username" class="form-label">Username:</label>
-                                <input type="text" class="form-control" name="username" placeholder="Enter username" required>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" autocomplete="off" required>
                               </div>
                               <div class="mb-3">
                                 <label for="password" class="form-label">Password:</label>
-                                <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" autocomplete="off" required>
                               </div>
                               <div class="mb-3">
                                     <button type="submit" class="btn btn-success">Register</button>
