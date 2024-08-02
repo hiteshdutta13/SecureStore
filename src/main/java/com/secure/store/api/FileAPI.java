@@ -4,18 +4,21 @@ import com.secure.store.modal.Response;
 import com.secure.store.modal.SharedFileDTO;
 import com.secure.store.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/file")
 public class FileAPI {
 
     @Autowired
     FileService fileService;
 
-    @PostMapping(value = "/file/upload/{id}")
+    @ResponseBody
+    @PostMapping(value = "/upload/{id}")
     public ResponseEntity<Response> upload( @PathVariable("id") Long folderId,
                                             @RequestParam("file") MultipartFile file) {
         var response = fileService.upload(folderId, file);
@@ -26,7 +29,8 @@ public class FileAPI {
         }
     }
 
-    @PostMapping(value = "/file/share")
+    @ResponseBody
+    @PostMapping(value = "/share")
     public ResponseEntity<Response> share( @RequestBody SharedFileDTO sharedFileDTO) {
         var response = fileService.share(sharedFileDTO);
         if(response.isSuccess()) {
@@ -36,5 +40,27 @@ public class FileAPI {
         }
     }
 
+    @ResponseBody
+    @RequestMapping (value="/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImage(@PathVariable("id") Long id) {
+        return fileService.getFile(id);
+    }
+
+    @ResponseBody
+    @RequestMapping (value="/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] getPdf(@PathVariable("id") Long id) {
+        return fileService.getFile(id);
+    }
+
+    @ResponseBody
+    @RequestMapping (value="/other/{id}")
+    public byte[] getTxt(@PathVariable("id") Long id) {
+        return fileService.getFile(id);
+    }
+
+    @GetMapping(value = "/download/{id}")
+    public ResponseEntity<Resource> download(@PathVariable("id") Long id) {
+        return fileService.download(id);
+    }
 
 }

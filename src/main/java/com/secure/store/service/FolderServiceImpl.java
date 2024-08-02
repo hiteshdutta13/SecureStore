@@ -95,7 +95,8 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         var breadcrumb = new Breadcrumb();
         breadcrumb.setName("My Drive");
         driveDTO.setBreadcrumb(breadcrumb);
-        driveDTO.setSharedFiles(this.sharedFiles(sharedFileRepository.findBy(this.getUserId())));
+        driveDTO.setSharedFilesWithYou(this.sharedFiles(sharedFileRepository.findBySharedTO(this.getUserId())));
+        driveDTO.setSharedFilesByYou(this.sharedFiles(sharedFileRepository.findBySharedBY(this.getUserId())));
         return driveDTO;
     }
     UserDTO transform(User user) {

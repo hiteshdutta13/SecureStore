@@ -52,6 +52,6 @@ public class FileUtil {
     }
 
     public static String docFilePath(String preFix) {
-        return preFix + FORWARD_SLASH  + "/SecureStore/Users";
+        return preFix + "/SecureStore/Users";
     }
 }

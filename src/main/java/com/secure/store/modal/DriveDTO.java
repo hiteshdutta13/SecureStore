@@ -10,6 +10,7 @@ public class DriveDTO {
     private FolderDTO folder;
     private List<FolderDTO> folders;
     private List<FileDTO> files;
-    private List<SharedFileDTO> sharedFiles;
+    private List<SharedFileDTO> sharedFilesWithYou;
+    private List<SharedFileDTO> sharedFilesByYou;
     private Breadcrumb breadcrumb;
 }

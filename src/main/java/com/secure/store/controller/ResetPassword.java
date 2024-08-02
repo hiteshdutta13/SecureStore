@@ -2,7 +2,6 @@ package com.secure.store.controller;
 
 import com.secure.store.constant.PageConstants;
 import com.secure.store.modal.ResetPasswordDTO;
-import com.secure.store.modal.Response;
 import com.secure.store.modal.UserDTO;
 import com.secure.store.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;

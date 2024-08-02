@@ -15,6 +15,9 @@
   <script src="${contextPath}/js/bootstrap.bundle.min.js"></script>
   <script src="${contextPath}/js/jquery.min.js"></script>
   <script src="${contextPath}/js/ajax.handler.min.js"></script>
+  <script src="${contextPath}/js/thirdparty/pdf.min.js"></script>
+  <script src="${contextPath}/js/thirdparty/mammoth.browser.min.js"></script>
+  <script src="${contextPath}/js/thirdparty/xlsx.core.min.js"></script>
 </head>
 <body class="bg-light bg-gradient">
     <div class="container" id="container" data-context="${contextPath}">
@@ -82,7 +85,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="createFolderModalLabel">New Folder</h5>
+            <h5 class="modal-title" id="createFolderModalLabel">Create Folder</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -119,16 +122,14 @@
         </div>
       </div>
     </div>
-    <div class="modal fade" id="imageViewModal" tabindex="-1" aria-labelledby="imageViewModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <div class="modal fade" id="fileViewModal" tabindex="-1" aria-labelledby="fileViewModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="imageViewModalLabel">Upload File</h5>
+            <h5 class="modal-title" id="fileViewModalLabel">File View</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-              <img src="..." class="img-fluid" alt="..."/>
-          </div>
+          <div class="modal-body"><!-- Dynamically --></div>
         </div>
       </div>
     </div>
