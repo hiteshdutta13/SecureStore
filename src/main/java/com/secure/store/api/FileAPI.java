@@ -63,4 +63,11 @@ public class FileAPI {
         return fileService.download(id, shared);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Response> download(@PathVariable("id") Long id) {
+        var response = new Response();
+        response.setData(fileService.get(id));
+        return ResponseEntity.ok(response);
+    }
+
 }

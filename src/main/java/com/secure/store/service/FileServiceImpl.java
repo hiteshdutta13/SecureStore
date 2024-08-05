@@ -4,6 +4,7 @@ import com.secure.store.constant.GlobalConstants;
 import com.secure.store.entity.*;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
+import com.secure.store.modal.FileDTO;
 import com.secure.store.modal.Response;
 import com.secure.store.modal.SharedFileDTO;
 import com.secure.store.repository.*;
@@ -59,12 +60,12 @@ public class FileServiceImpl extends GlobalService implements FileService {
                     saveFile.setFolder(folder);
                 } else {
                     FileUtil.createDirectory(path);
-                    saveFile.setPath("/");
+                    saveFile.setPath(FileUtil.FORWARD_SLASH);
                 }
                 saveFile.setName(fileName);
                 saveFile.setOriginalName(file.getOriginalFilename());
                 saveFile.setContentType(file.getContentType());
-                saveFile.setSize(file.getSize());
+                saveFile.setSize(Math.round(file.getSize() / 1024.0));
                 saveFile.setStatus(Status.Active);
                 saveFile.setUser(this.getUser());
                 saveFile.setCreatedDateTime(DateTimeUtil.currentDateTime());
@@ -151,8 +152,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
                         userId = optionalSharedFile.get().getSharedBy().getId();
                     }
                 }
-                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals("/") ? "":"/") + file.getName();
-                logger.info("load file from location: "+filePath);
+                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals(FileUtil.FORWARD_SLASH) ? "":FileUtil.FORWARD_SLASH) + file.getName();
                 Path path = Paths.get(filePath);
                 return Files.readAllBytes(path);
             }catch (IOException ioException) {
@@ -174,7 +174,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
                         userId = optionalSharedFile.get().getSharedBy().getId();
                     }
                 }
-                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals("/") ? "" : "/") + file.getName();
+                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals(FileUtil.FORWARD_SLASH) ? "" : FileUtil.FORWARD_SLASH) + file.getName();
                 logger.info("download file from location: " + filePath);
                 Path path = Paths.get(filePath);
                 Resource resource = new UrlResource(path.toString());
@@ -190,5 +190,23 @@ public class FileServiceImpl extends GlobalService implements FileService {
                 return ResponseEntity.notFound().build();
             }
         } return ResponseEntity.notFound().build();
+    }
+
+    @Override
+    public FileDTO get(Long id) {
+        File file = fileRepository.getReferenceById(id);
+        var fileDTO = new FileDTO();
+        fileDTO.setId(file.getId());
+        fileDTO.setName(file.getName());
+        fileDTO.setType(file.getContentType());
+        fileDTO.setOriginalName(file.getOriginalName());
+        fileDTO.setSize(file.getSize());
+        fileDTO.setPath(file.getPath());
+        if(file.getFolder() != null) {
+            fileDTO.setFolderId(file.getFolder().getId());
+        }
+        fileDTO.setCreatedDateTime(DateTimeUtil.formatDate(file.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+        fileDTO.setUpdatedDateTime(DateTimeUtil.formatDate(file.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+        return fileDTO;
     }
 }
