@@ -8,8 +8,7 @@ import java.util.List;
 public class SharedFileDTO {
     private Long id;
     private String sharedDateTime;
-    private UserDTO toUser;
-    private List<UserDTO> toUsers;
+    private List<SharedFileToUserDTO> toUsers;
     private UserDTO sharedBy;
     private FileDTO file;
 }

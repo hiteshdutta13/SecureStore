@@ -42,25 +42,25 @@ public class FileAPI {
 
     @ResponseBody
     @RequestMapping (value="/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getImage(@PathVariable("id") Long id) {
-        return fileService.getFile(id);
+    public byte[] getImage(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+        return fileService.getFile(id, shared);
     }
 
     @ResponseBody
     @RequestMapping (value="/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
-    public byte[] getPdf(@PathVariable("id") Long id) {
-        return fileService.getFile(id);
+    public byte[] getPdf(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+        return fileService.getFile(id, shared);
     }
 
     @ResponseBody
     @RequestMapping (value="/other/{id}")
-    public byte[] getTxt(@PathVariable("id") Long id) {
-        return fileService.getFile(id);
+    public byte[] getTxt(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+        return fileService.getFile(id, shared);
     }
 
     @GetMapping(value = "/download/{id}")
-    public ResponseEntity<Resource> download(@PathVariable("id") Long id) {
-        return fileService.download(id);
+    public ResponseEntity<Resource> download(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+        return fileService.download(id, shared);
     }
 
 }

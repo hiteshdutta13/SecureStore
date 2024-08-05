@@ -9,6 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileService {
     Response upload(Long folderId, MultipartFile file);
     Response share(SharedFileDTO sharedFileDTO);
-    byte[] getFile(Long id);
-    ResponseEntity<Resource> download(Long id);
+    byte[] getFile(Long id, boolean shared);
+    ResponseEntity<Resource> download(Long id, boolean shared);
 }

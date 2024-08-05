@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FolderServiceImpl extends GlobalService implements FolderService {
@@ -28,6 +25,8 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
     SettingRepository settingRepository;
     @Autowired
     SharedFileRepository sharedFileRepository;
+    @Autowired
+    SharedFileToUserRepository sharedFileToUserRepository;
 
     @Override
     public Response create(FolderDTO folderDTO) {
@@ -95,8 +94,8 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         var breadcrumb = new Breadcrumb();
         breadcrumb.setName("My Drive");
         driveDTO.setBreadcrumb(breadcrumb);
-        driveDTO.setSharedFilesWithYou(this.sharedFiles(sharedFileRepository.findBySharedTO(this.getUserId()), false));
-        driveDTO.setSharedFilesByYou(this.sharedFiles(sharedFileRepository.findBySharedBY(this.getUserId()), true));
+        driveDTO.setSharedFilesWithYou(this.sharedFilesWithYou(sharedFileToUserRepository.findBy(this.getUserId())));
+        driveDTO.setSharedFilesByYou(this.sharedFiles(sharedFileRepository.findBySharedBY(this.getUserId())));
         return driveDTO;
     }
     UserDTO transform(User user) {
@@ -108,19 +107,36 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         userDTO.setLastName(user.getLastName());
         return userDTO;
     }
-    List<SharedFileDTO> sharedFiles(List<SharedFile> sharedFiles, boolean self) {
+
+    List<SharedFileDTO> sharedFiles(List<SharedFile> sharedFiles) {
         var files = new ArrayList<SharedFileDTO>();
         Optional.ofNullable(sharedFiles).orElseGet(Collections::emptyList).forEach(documentShare -> {
             var sharedFile = new SharedFileDTO();
             sharedFile.setFile(this.transform(documentShare.getFile()));
             sharedFile.setId(documentShare.getId());
-            if(self) {
-
-            }else {
-                sharedFile.setSharedBy(this.transform(documentShare.getSharedBy()));
-            }
-            sharedFile.setSharedDateTime(DateTimeUtil.formatDate(documentShare.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+            sharedFile.setSharedBy(this.transform(documentShare.getSharedBy()));
+            var listOfUsers = new ArrayList<SharedFileToUserDTO>();
+            documentShare.getSharedFileToUsers().forEach(sharedFileToUser -> {
+                var sharedFileToUserDTO = new SharedFileToUserDTO();
+                sharedFileToUserDTO.setUserDTO(transform(sharedFileToUser.getUserId()));
+                sharedFileToUserDTO.setSharedDateTime(DateTimeUtil.formatDate(sharedFileToUser.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+                listOfUsers.add(sharedFileToUserDTO);
+            });
+            sharedFile.setToUsers(listOfUsers);
             files.add(sharedFile);
+        });
+        return files;
+    }
+    List<SharedFileDTO> sharedFilesWithYou(List<SharedFileToUser> sharedFileToUsers) {
+        var files = new ArrayList<SharedFileDTO>();
+        Optional.ofNullable(sharedFileToUsers).orElseGet(Collections::emptyList).forEach(sharedFileToUser -> {
+            var sharedFileDTO = new SharedFileDTO();
+            var sharedFile = sharedFileToUser.getSharedFile();
+            sharedFileDTO.setFile(this.transform(sharedFile.getFile()));
+            sharedFileDTO.setId(sharedFile.getId());
+            sharedFileDTO.setSharedBy(this.transform(sharedFile.getSharedBy()));
+            sharedFileDTO.setSharedDateTime(DateTimeUtil.formatDate(sharedFileToUser.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+            files.add(sharedFileDTO);
         });
         return files;
     }

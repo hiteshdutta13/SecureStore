@@ -1,18 +1,12 @@
 package com.secure.store.service;
 
 import com.secure.store.constant.GlobalConstants;
-import com.secure.store.entity.File;
-import com.secure.store.entity.Folder;
-import com.secure.store.entity.SharedFile;
-import com.secure.store.entity.User;
+import com.secure.store.entity.*;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.Advisory;
 import com.secure.store.modal.Response;
 import com.secure.store.modal.SharedFileDTO;
-import com.secure.store.repository.FileRepository;
-import com.secure.store.repository.SharedFileRepository;
-import com.secure.store.repository.FolderRepository;
-import com.secure.store.repository.GlobalRepository;
+import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.FileUtil;
 import org.slf4j.Logger;
@@ -31,8 +25,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl extends GlobalService implements FileService {
@@ -45,6 +39,8 @@ public class FileServiceImpl extends GlobalService implements FileService {
     FileRepository fileRepository;
     @Autowired
     SharedFileRepository sharedFileRepository;
+    @Autowired
+    SharedFileToUserRepository sharedFileToUserRepository;
 
     @Override
     public Response upload(Long folderId, MultipartFile file) {
@@ -101,23 +97,40 @@ public class FileServiceImpl extends GlobalService implements FileService {
     public Response share(SharedFileDTO sharedFileDTO) {
         var response = new Response();
         if(sharedFileDTO != null && sharedFileDTO.getFile() != null && sharedFileDTO.getFile().getId() != null && sharedFileDTO.getToUsers() != null) {
-            sharedFileDTO.getToUsers().stream().filter(toUser -> toUser.getId() != null && toUser.getId() > 0).forEach(toUser -> {
-                Optional<SharedFile> optionalSharedFile = sharedFileRepository.findBy(toUser.getId(), this.getUserId(), sharedFileDTO.getFile().getId());
-                if(optionalSharedFile.isEmpty()) {
-                    var sharedFile = new SharedFile();
-                    var file = new File();
-                    file.setId(sharedFileDTO.getFile().getId());
-                    sharedFile.setFile(file);
-                    sharedFile.setSharedBy(this.getUser());
-                    var sharedTo = new User();
-                    sharedTo.setId(toUser.getId());
-                    sharedFile.setSharedTo(sharedTo);
-                    sharedFile.setSharedDateTime(DateTimeUtil.currentDateTime());
-                    sharedFileRepository.save(sharedFile);
-                }else {
-                    response.addMessage("File already shared with email: "+optionalSharedFile.get().getSharedTo().getId());
+            var sharedFile = new SharedFile();
+            List<SharedFileToUser> listToUsers = new ArrayList<>();
+            var existingSharedFile = sharedFileRepository.findBy(sharedFileDTO.getFile().getId());
+            Set<Long> sharedWith;
+            if(existingSharedFile.isPresent()) {
+                sharedFile.setId(existingSharedFile.get().getId());
+                listToUsers = existingSharedFile.get().getSharedFileToUsers();
+                sharedWith = listToUsers.stream().map(sharedFileToUser -> sharedFileToUser.getUserId().getId()).collect(Collectors.toSet());
+            } else {
+                sharedWith = new HashSet<>();
+            }
+            List<SharedFileToUser> finalListToUsers = listToUsers;
+            sharedFileDTO.getToUsers().stream().filter(toUser -> toUser.getId() != null && toUser.getId() > 0 && !sharedWith.contains(toUser.getId())).forEach(toUser -> {
+                Optional<SharedFileToUser> optionalSharedFileToUser = sharedFileToUserRepository.findBy(toUser.getId(), this.getUserId(), sharedFileDTO.getFile().getId());
+                if(optionalSharedFileToUser.isEmpty()) {
+                    var sharedFileToUser = new SharedFileToUser();
+                    var userId = new User();
+                    userId.setId(toUser.getId());
+                    sharedFileToUser.setUserId(userId);
+                    sharedFileToUser.setSharedFile(sharedFile);
+                    sharedFileToUser.setSharedDateTime(DateTimeUtil.currentDateTime());
+                    finalListToUsers.add(sharedFileToUser);
                 }
             });
+            if(listToUsers.size() > 0) {
+                sharedFile.setSharedFileToUsers(listToUsers);
+                var file = new File();
+                file.setId(sharedFileDTO.getFile().getId());
+                sharedFile.setFile(file);
+                sharedFile.setSharedBy(this.getUser());
+                sharedFileRepository.save(sharedFile);
+            }else {
+                response.addMessage("File already shared with users");
+            }
         }else {
             response.setSuccess(false);
             response.addMessage("Error occurred while sharing the file.");
@@ -126,12 +139,19 @@ public class FileServiceImpl extends GlobalService implements FileService {
     }
 
     @Override
-    public byte[] getFile(Long id) {
+    public byte[] getFile(Long id, boolean shared) {
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
         if(preFix.isPresent()) {
             try {
                 File file = fileRepository.getReferenceById(id);
-                String filePath = FileUtil.docFilePath(preFix.get().getValue(), this.getUserId()) + file.getPath() + (file.getPath().trim().equals("/") ? "":"/") + file.getName();
+                Long userId = this.getUserId();
+                if(shared) {
+                    Optional<SharedFile> optionalSharedFile = sharedFileRepository.findBy(file.getId());
+                    if(optionalSharedFile.isPresent()) {
+                        userId = optionalSharedFile.get().getSharedBy().getId();
+                    }
+                }
+                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals("/") ? "":"/") + file.getName();
                 logger.info("load file from location: "+filePath);
                 Path path = Paths.get(filePath);
                 return Files.readAllBytes(path);
@@ -142,12 +162,19 @@ public class FileServiceImpl extends GlobalService implements FileService {
     }
 
     @Override
-    public ResponseEntity<Resource> download(Long id) {
+    public ResponseEntity<Resource> download(Long id, boolean shared) {
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
         if(preFix.isPresent()) {
             try {
                 File file = fileRepository.getReferenceById(id);
-                String filePath = FileUtil.docFilePath(preFix.get().getValue(), this.getUserId()) + file.getPath() + (file.getPath().trim().equals("/") ? "" : "/") + file.getName();
+                Long userId = this.getUserId();
+                if(shared) {
+                    Optional<SharedFile> optionalSharedFile = sharedFileRepository.findBy(file.getId());
+                    if(optionalSharedFile.isPresent()) {
+                        userId = optionalSharedFile.get().getSharedBy().getId();
+                    }
+                }
+                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals("/") ? "" : "/") + file.getName();
                 logger.info("download file from location: " + filePath);
                 Path path = Paths.get(filePath);
                 Resource resource = new UrlResource(path.toString());

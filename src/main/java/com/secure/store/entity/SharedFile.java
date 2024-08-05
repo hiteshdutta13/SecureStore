@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,19 +16,14 @@ public class SharedFile {
     @Column(name="ID")
     private Long id;
 
-    @JoinColumn(name="FILE_ID", referencedColumnName="ID", nullable = false)
+    @JoinColumn(name="FILE_ID", referencedColumnName="ID", nullable = false, unique = true)
     @ManyToOne(fetch = FetchType.LAZY)
     private File file;
 
-    @JoinColumn(name="SHARED_TO_ID", referencedColumnName="ID", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User sharedTo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sharedFile", fetch=FetchType.LAZY, orphanRemoval = true)
+    private List<SharedFileToUser> sharedFileToUsers;
 
     @JoinColumn(name="SHARED_BY_ID", referencedColumnName="ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User sharedBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="SHARED_DATE_TIME", nullable = false)
-    private Date sharedDateTime;
 }
