@@ -95,8 +95,8 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         var breadcrumb = new Breadcrumb();
         breadcrumb.setName("My Drive");
         driveDTO.setBreadcrumb(breadcrumb);
-        driveDTO.setSharedFilesWithYou(this.sharedFiles(sharedFileRepository.findBySharedTO(this.getUserId())));
-        driveDTO.setSharedFilesByYou(this.sharedFiles(sharedFileRepository.findBySharedBY(this.getUserId())));
+        driveDTO.setSharedFilesWithYou(this.sharedFiles(sharedFileRepository.findBySharedTO(this.getUserId()), false));
+        driveDTO.setSharedFilesByYou(this.sharedFiles(sharedFileRepository.findBySharedBY(this.getUserId()), true));
         return driveDTO;
     }
     UserDTO transform(User user) {
@@ -108,13 +108,17 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         userDTO.setLastName(user.getLastName());
         return userDTO;
     }
-    List<SharedFileDTO> sharedFiles(List<SharedFile> sharedFiles) {
+    List<SharedFileDTO> sharedFiles(List<SharedFile> sharedFiles, boolean self) {
         var files = new ArrayList<SharedFileDTO>();
         Optional.ofNullable(sharedFiles).orElseGet(Collections::emptyList).forEach(documentShare -> {
             var sharedFile = new SharedFileDTO();
             sharedFile.setFile(this.transform(documentShare.getFile()));
             sharedFile.setId(documentShare.getId());
-            sharedFile.setSharedBy(this.transform(documentShare.getSharedBy()));
+            if(self) {
+
+            }else {
+                sharedFile.setSharedBy(this.transform(documentShare.getSharedBy()));
+            }
             sharedFile.setSharedDateTime(DateTimeUtil.formatDate(documentShare.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
             files.add(sharedFile);
         });

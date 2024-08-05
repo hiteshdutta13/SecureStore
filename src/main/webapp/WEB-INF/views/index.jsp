@@ -10,6 +10,7 @@
   <title>Secure Store</title>
   <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
   <link rel="stylesheet" href="${contextPath}/css/bootstrap.min.css">
+  <link rel="stylesheet" href="${contextPath}/css/thirdparty/sweetalert2.min.css">
   <link rel="stylesheet" href="${contextPath}/css/app.css">
   <link rel="shortcut icon" href="${contextPath}/images/secure-store-icon.webp" />
   <script src="${contextPath}/js/bootstrap.bundle.min.js"></script>
@@ -71,14 +72,6 @@
               </div>
           </div>
         </div>
-        <div class="toast align-items-center float-end" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="d-flex">
-            <div class="toast-body">
-                <i class="fa-regular fa-circle-check text-success"></i> <span class="toastMessage">Hello, world! This is a toast message.</spa>
-           </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-        </div>
         <jsp:include page="footer.jsp"/>
     </div>
     <div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
@@ -134,7 +127,7 @@
       </div>
     </div>
     <div class="modal fade" id="fileShareModal" tabindex="-1" aria-labelledby="fileShareModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="fileShareModalLabel"></h5>
@@ -149,5 +142,6 @@
       </div>
     </div>
 </body>
+<script src="${contextPath}/js/thirdparty/sweetalert2.min.js"></script>
 <script src="${contextPath}/js/app.min.js"></script>
 </html>

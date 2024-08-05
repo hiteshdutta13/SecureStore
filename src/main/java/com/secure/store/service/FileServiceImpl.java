@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -99,23 +100,24 @@ public class FileServiceImpl extends GlobalService implements FileService {
     @Override
     public Response share(SharedFileDTO sharedFileDTO) {
         var response = new Response();
-        if(sharedFileDTO != null && sharedFileDTO.getFile() != null && sharedFileDTO.getFile().getId() != null && sharedFileDTO.getToUser() != null && sharedFileDTO.getToUser().getId() != null) {
-            Optional<SharedFile> optionalSharedFile = sharedFileRepository.findBy(sharedFileDTO.getToUser().getId(), this.getUserId(), sharedFileDTO.getFile().getId());
-            if(optionalSharedFile.isEmpty()) {
-                var sharedFile = new SharedFile();
-                var file = new File();
-                file.setId(sharedFileDTO.getFile().getId());
-                sharedFile.setFile(file);
-                sharedFile.setSharedBy(this.getUser());
-                var sharedTo = new User();
-                sharedTo.setId(sharedFileDTO.getToUser().getId());
-                sharedFile.setSharedTo(sharedTo);
-                sharedFile.setSharedDateTime(DateTimeUtil.currentDateTime());
-                sharedFileRepository.save(sharedFile);
-            }else {
-                response.setSuccess(false);
-                response.addMessage("File already shared with this user.");
-            }
+        if(sharedFileDTO != null && sharedFileDTO.getFile() != null && sharedFileDTO.getFile().getId() != null && sharedFileDTO.getToUsers() != null) {
+            sharedFileDTO.getToUsers().stream().filter(toUser -> toUser.getId() != null && toUser.getId() > 0).forEach(toUser -> {
+                Optional<SharedFile> optionalSharedFile = sharedFileRepository.findBy(toUser.getId(), this.getUserId(), sharedFileDTO.getFile().getId());
+                if(optionalSharedFile.isEmpty()) {
+                    var sharedFile = new SharedFile();
+                    var file = new File();
+                    file.setId(sharedFileDTO.getFile().getId());
+                    sharedFile.setFile(file);
+                    sharedFile.setSharedBy(this.getUser());
+                    var sharedTo = new User();
+                    sharedTo.setId(toUser.getId());
+                    sharedFile.setSharedTo(sharedTo);
+                    sharedFile.setSharedDateTime(DateTimeUtil.currentDateTime());
+                    sharedFileRepository.save(sharedFile);
+                }else {
+                    response.addMessage("File already shared with email: "+optionalSharedFile.get().getSharedTo().getId());
+                }
+            });
         }else {
             response.setSuccess(false);
             response.addMessage("Error occurred while sharing the file.");
