@@ -1,6 +1,8 @@
 package com.secure.store.config;
 
+import com.secure.store.service.CustomLogoutSuccessHandler;
 import com.secure.store.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,6 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+    @Autowired
+    CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -39,7 +44,7 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.requestMatchers("/", "/my-drive", "/api/**", "/js/**").authenticated().anyRequest().permitAll())
         .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/").permitAll())
-        .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/").invalidateHttpSession(true).deleteCookies("JSESSIONID"));
+        .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(customLogoutSuccessHandler).invalidateHttpSession(true).deleteCookies("JSESSIONID"));
         return http.build();
     }
 }

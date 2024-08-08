@@ -10,4 +10,5 @@ public interface FolderService {
     Response delete(FolderDTO folderDTO);
     DriveDTO findBy(Long id);
     DriveDTO findAll();
+    FolderDTO get(Long id);
 }

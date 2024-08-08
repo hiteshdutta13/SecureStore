@@ -14,4 +14,5 @@ public class FolderDTO {
     private String updatedDateTime;
     private List<FolderDTO> subFolders;
     private List<FileDTO> files;
+    private FolderPropertyDTO property;
 }

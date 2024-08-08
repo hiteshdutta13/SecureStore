@@ -98,6 +98,14 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         driveDTO.setSharedFilesByYou(this.sharedFiles(sharedFileRepository.findBySharedBY(this.getUserId())));
         return driveDTO;
     }
+
+    @Override
+    public FolderDTO get(Long id) {
+        var folderDTO = this.transform(folderRepository.getReferenceById(id));
+        folderDTO.setProperty(this.buildProperty(id));
+        return folderDTO;
+    }
+
     UserDTO transform(User user) {
         var userDTO = new UserDTO();
         userDTO.setId(user.getId());
@@ -110,20 +118,20 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
 
     List<SharedFileDTO> sharedFiles(List<SharedFile> sharedFiles) {
         var files = new ArrayList<SharedFileDTO>();
-        Optional.ofNullable(sharedFiles).orElseGet(Collections::emptyList).forEach(documentShare -> {
-            var sharedFile = new SharedFileDTO();
-            sharedFile.setFile(this.transform(documentShare.getFile()));
-            sharedFile.setId(documentShare.getId());
-            sharedFile.setSharedBy(this.transform(documentShare.getSharedBy()));
+        Optional.ofNullable(sharedFiles).orElseGet(Collections::emptyList).forEach(sharedFile -> {
+            var sharedFileDTO = new SharedFileDTO();
+            sharedFileDTO.setFile(this.transform(sharedFile.getFile()));
+            sharedFileDTO.setId(sharedFile.getId());
+            sharedFileDTO.setSharedBy(this.transform(sharedFile.getSharedBy()));
             var listOfUsers = new ArrayList<SharedFileToUserDTO>();
-            documentShare.getSharedFileToUsers().forEach(sharedFileToUser -> {
+            sharedFile.getSharedFileToUsers().forEach(sharedFileToUser -> {
                 var sharedFileToUserDTO = new SharedFileToUserDTO();
                 sharedFileToUserDTO.setUserDTO(transform(sharedFileToUser.getUserId()));
                 sharedFileToUserDTO.setSharedDateTime(DateTimeUtil.formatDate(sharedFileToUser.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
                 listOfUsers.add(sharedFileToUserDTO);
             });
-            sharedFile.setToUsers(listOfUsers);
-            files.add(sharedFile);
+            sharedFileDTO.setToUsers(listOfUsers);
+            files.add(sharedFileDTO);
         });
         return files;
     }
@@ -140,30 +148,56 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         });
         return files;
     }
-    FileDTO transform(File document) {
-        var file = new FileDTO();
-        file.setId(document.getId());
-        file.setName(document.getName());
-        file.setType(document.getContentType());
-        file.setOriginalName(document.getOriginalName());
-        file.setSize(document.getSize());
-        file.setPath(document.getPath());
-        if(document.getFolder() != null) {
-            file.setFolderId(document.getFolder().getId());
+    FileDTO transform(File file) {
+        var fileDTO = new FileDTO();
+        fileDTO.setId(file.getId());
+        fileDTO.setName(file.getName());
+        fileDTO.setType(file.getContentType());
+        fileDTO.setOriginalName(file.getOriginalName());
+        fileDTO.setSize(file.getSize());
+        fileDTO.setPath(file.getPath());
+        if(file.getFolder() != null) {
+            fileDTO.setFolderId(file.getFolder().getId());
         }
-        file.setCreatedDateTime(DateTimeUtil.formatDate(document.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        file.setUpdatedDateTime(DateTimeUtil.formatDate(document.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        return file;
+        fileDTO.setCreatedDateTime(DateTimeUtil.formatDate(file.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+        fileDTO.setUpdatedDateTime(DateTimeUtil.formatDate(file.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+        return fileDTO;
     }
-    List<FileDTO> transform(List<File> documents) {
-        var files = new ArrayList<FileDTO>();
-        Optional.ofNullable(documents).orElseGet(Collections::emptyList).forEach(document -> files.add(this.transform(document)));
-        return files;
+    List<FileDTO> transform(List<File> files) {
+        var fileDTOs = new ArrayList<FileDTO>();
+        Optional.ofNullable(files).orElseGet(Collections::emptyList).forEach(file -> fileDTOs.add(this.transform(file)));
+        return fileDTOs;
     }
     List<FolderDTO> transformList(List<Folder> folders) {
        var folderDTOS = new ArrayList<FolderDTO>();
        Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> folderDTOS.add(this.transform(folder)));
        return folderDTOS;
+    }
+    void calculateFolderProperty(PropertyDTO propertyDTO, List<Folder> folders) {
+       Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> {
+           propertyDTO.setFolders(propertyDTO.getFolders() + 1);
+           Optional.ofNullable(fileRepository.findByFolder(folder.getId())).orElseGet(Collections::emptyList).forEach(file -> {
+               propertyDTO.setFiles(propertyDTO.getFiles() + 1);
+               propertyDTO.setSize(propertyDTO.getSize() + file.getSize());
+           });
+           this.calculateFolderProperty(propertyDTO, folderRepository.findByParent(folder.getId()));
+       });
+    }
+    FolderPropertyDTO buildProperty(Long folderId) {
+        var folderPropertyDTO = new FolderPropertyDTO();
+        Folder folder = folderRepository.getReferenceById(folderId);
+        folderPropertyDTO.setName(folder.getName());
+        var propertyDTO = new PropertyDTO();
+        Optional.ofNullable(fileRepository.findByFolder(folder.getId())).orElseGet(Collections::emptyList).forEach(file -> {
+            propertyDTO.setFiles(propertyDTO.getFiles() + 1);
+            propertyDTO.setSize(propertyDTO.getSize() + file.getSize());
+        });
+        this.calculateFolderProperty(propertyDTO, folderRepository.findByParent(folder.getId()));
+        folderPropertyDTO.setFolders(propertyDTO.getFolders());
+        folderPropertyDTO.setSize(propertyDTO.getSize());
+        folderPropertyDTO.setFiles(propertyDTO.getFiles());
+        folderPropertyDTO.setCreatedDateTime(DateTimeUtil.formatDate(folder.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
+        return folderPropertyDTO;
     }
 
     FolderDTO transform(Folder folder) {

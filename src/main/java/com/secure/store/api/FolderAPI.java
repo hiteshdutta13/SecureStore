@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class FolderAPI {
     @Autowired
-    private FolderService folderService;
+    FolderService folderService;
 
     @PostMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> folder(@RequestBody FolderDTO folder) {
@@ -25,7 +25,7 @@ public class FolderAPI {
     }
 
     @PutMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> renameFolder(@RequestBody FolderDTO folder) {
+    public ResponseEntity<Response> rename(@RequestBody FolderDTO folder) {
         var response = folderService.rename(folder);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
@@ -35,12 +35,19 @@ public class FolderAPI {
     }
 
     @DeleteMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> deleteFolder(@RequestBody FolderDTO folder) {
+    public ResponseEntity<Response> delete(@RequestBody FolderDTO folder) {
         var response = folderService.delete(folder);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @GetMapping(value = "/folder/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response> get(@PathVariable("id") Long id) {
+        var response = new Response();
+        response.setData(folderService.get(id));
+        return ResponseEntity.ok(response);
     }
 }
