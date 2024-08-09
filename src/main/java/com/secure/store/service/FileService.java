@@ -13,4 +13,5 @@ public interface FileService {
     byte[] getFile(Long id, boolean shared);
     ResponseEntity<Resource> download(Long id, boolean shared);
     FileDTO get(Long id);
+    Response delete(Long id);
 }

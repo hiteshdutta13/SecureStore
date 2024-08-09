@@ -3,6 +3,7 @@ package com.secure.store.service;
 import com.secure.store.constant.GlobalConstants;
 import com.secure.store.constant.SettingConstants;
 import com.secure.store.entity.*;
+import com.secure.store.entity.util.Status;
 import com.secure.store.modal.*;
 import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
@@ -87,7 +88,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
     public DriveDTO findAll() {
         var driveDTO = new DriveDTO();
         driveDTO.setFolders(this.transformList(folderRepository.findBy(this.getUserId())));
-        driveDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId())));
+        driveDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId(), Status.Active)));
         driveDTO.setView("grid");
         Optional<Setting> optionalSetting = settingRepository.findBy(SettingConstants.DRIVE_DEFAULT_VIEW, this.getUserId());
         optionalSetting.ifPresent(setting -> driveDTO.setView(setting.getValue()));
@@ -176,7 +177,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
     void calculateFolderProperty(PropertyDTO propertyDTO, List<Folder> folders) {
        Optional.ofNullable(folders).orElseGet(Collections::emptyList).forEach(folder -> {
            propertyDTO.setFolders(propertyDTO.getFolders() + 1);
-           Optional.ofNullable(fileRepository.findByFolder(folder.getId())).orElseGet(Collections::emptyList).forEach(file -> {
+           Optional.ofNullable(fileRepository.findByFolder(folder.getId(), Status.Active)).orElseGet(Collections::emptyList).forEach(file -> {
                propertyDTO.setFiles(propertyDTO.getFiles() + 1);
                propertyDTO.setSize(propertyDTO.getSize() + file.getSize());
            });
@@ -188,7 +189,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         Folder folder = folderRepository.getReferenceById(folderId);
         folderPropertyDTO.setName(folder.getName());
         var propertyDTO = new PropertyDTO();
-        Optional.ofNullable(fileRepository.findByFolder(folder.getId())).orElseGet(Collections::emptyList).forEach(file -> {
+        Optional.ofNullable(fileRepository.findByFolder(folder.getId(), Status.Active)).orElseGet(Collections::emptyList).forEach(file -> {
             propertyDTO.setFiles(propertyDTO.getFiles() + 1);
             propertyDTO.setSize(propertyDTO.getSize() + file.getSize());
         });
@@ -205,7 +206,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         folderDTO.setId(folder.getId());
         folderDTO.setName(folder.getName());
         folderDTO.setPath(folder.getPath());
-        folderDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId(), folder.getId())));
+        folderDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId(), folder.getId(), Status.Active)));
         folderDTO.setCreatedDateTime(DateTimeUtil.formatDate(folder.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setUpdatedDateTime(DateTimeUtil.formatDate(folder.getUpdateDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setSubFolders(transformList(folderRepository.findBy(this.getUserId(), folder.getId())));

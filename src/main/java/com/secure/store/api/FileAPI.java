@@ -42,31 +42,42 @@ public class FileAPI {
 
     @ResponseBody
     @RequestMapping (value="/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getImage(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+    public byte[] image(@PathVariable("id") Long id,
+                        @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }
 
     @ResponseBody
     @RequestMapping (value="/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
-    public byte[] getPdf(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+    public byte[] pdf(@PathVariable("id") Long id,
+                      @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }
 
     @ResponseBody
     @RequestMapping (value="/other/{id}")
-    public byte[] getTxt(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+    public byte[] text(@PathVariable("id") Long id,
+                       @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }
 
     @GetMapping(value = "/download/{id}")
-    public ResponseEntity<Resource> download(@PathVariable("id") Long id, @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
+    public ResponseEntity<Resource> download(@PathVariable("id") Long id,
+                                             @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.download(id, shared);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Response> download(@PathVariable("id") Long id) {
+    public ResponseEntity<Response> get(@PathVariable("id") Long id) {
         var response = new Response();
         response.setData(fileService.get(id));
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Response> delete(@PathVariable("id") Long id) {
+        var response = new Response();
+        response.setData(fileService.delete(id));
         return ResponseEntity.ok(response);
     }
 

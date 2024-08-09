@@ -209,4 +209,13 @@ public class FileServiceImpl extends GlobalService implements FileService {
         fileDTO.setUpdatedDateTime(DateTimeUtil.formatDate(file.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         return fileDTO;
     }
+
+    @Override
+    public Response delete(Long id) {
+        File file = fileRepository.getReferenceById(id);
+        file.setStatus(Status.Deleted);
+        file.setUpdatedDateTime(DateTimeUtil.currentDateTime());
+        fileRepository.save(file);
+        return new Response();
+    }
 }
