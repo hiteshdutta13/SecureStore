@@ -4,7 +4,6 @@ import com.secure.store.entity.User;
 import com.secure.store.repository.UserRepository;
 import com.secure.store.repository.UserSessionRepository;
 import com.secure.store.util.DateTimeUtil;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

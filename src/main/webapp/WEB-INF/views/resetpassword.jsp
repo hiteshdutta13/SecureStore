@@ -47,7 +47,7 @@
                                       </div>
                                       <div class="mb-3">
                                            <button type="submit" class="btn btn-success">Continue</button>
-                                           <a href="${contextPath}" class="btn btn-secondary">Cancel</a>
+                                           <a href="${contextPath}/" class="btn btn-secondary">Cancel</a>
                                       </div>
                                 </form>
                             </c:when>
@@ -72,15 +72,15 @@
                             </c:when>
                             <c:when test="${page eq 'success'}">
                                 <div class="alert alert-success" role="alert">${message}</div>
-                                <a href="${contextPath}" class="btn btn-success">Click here to sign in</a>
+                                <a href="${contextPath}/" class="btn btn-success">Click here to sign in</a>
                             </c:when>
                             <c:when test="${page eq 'expired'}">
                                 <div class="alert alert-danger" role="alert">${message}</div>
-                                <a href="${contextPath}" class="btn btn-success">Go to Home page</a>
+                                <a href="${contextPath}/" class="btn btn-success">Go to Home page</a>
                             </c:when>
                             <c:otherwise>
                                 <div class="alert alert-success" role="alert">${message}</div>
-                                <a href="${contextPath}" class="btn btn-success">Go to Home page</a>
+                                <a href="${contextPath}/" class="btn btn-success">Go to Home page</a>
                             </c:otherwise>
                         </c:choose>
                   </div>

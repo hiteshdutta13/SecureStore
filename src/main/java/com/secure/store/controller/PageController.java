@@ -14,12 +14,14 @@ public class PageController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
+        model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "default");
         return PageConstants.PAGE_INDEX;
     }
 
-    @GetMapping("/my-drive")
+    @GetMapping("/settings")
     public String drive(Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
+        model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "settings");
         return PageConstants.PAGE_INDEX;
     }
 }

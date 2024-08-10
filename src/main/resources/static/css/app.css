@@ -8,3 +8,7 @@
     text-wrap: nowrap;
     overflow: hidden;
 }
+.btn-xs{padding:1px 5px;font-size:12px;line-height:1.5;border-radius:3px}
+.fs-75 {
+font-size: 75px;
+}

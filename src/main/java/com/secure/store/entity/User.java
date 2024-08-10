@@ -1,5 +1,7 @@
 package com.secure.store.entity;
 
+import com.secure.store.entity.util.Gender;
+import com.secure.store.entity.util.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -29,6 +31,21 @@ public class User {
 
     @Column(name="LAST_NAME", nullable = false)
     private String lastName;
+
+    @Column(name="MOBILE_NO")
+    private String mobileNo;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name="DATE_OF_BIRTH")
+    private Date dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="GENDER")
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUS", nullable = false)
+    private Status status;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="CREATED_DATE_TIME", nullable = false)

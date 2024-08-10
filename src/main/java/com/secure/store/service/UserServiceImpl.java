@@ -1,13 +1,13 @@
 package com.secure.store.service;
 
+import com.secure.store.entity.Setting;
 import com.secure.store.entity.User;
 import com.secure.store.entity.UserRequest;
+import com.secure.store.entity.util.Gender;
 import com.secure.store.entity.util.RequestType;
 import com.secure.store.entity.util.Status;
-import com.secure.store.modal.Advisory;
-import com.secure.store.modal.ResetPasswordDTO;
-import com.secure.store.modal.Response;
-import com.secure.store.modal.UserDTO;
+import com.secure.store.modal.*;
+import com.secure.store.repository.SettingRepository;
 import com.secure.store.repository.UserRepository;
 import com.secure.store.repository.UserRequestRepository;
 import com.secure.store.util.DateTimeUtil;
@@ -23,10 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl extends GlobalService implements UserService {
@@ -38,6 +35,8 @@ public class UserServiceImpl extends GlobalService implements UserService {
     JavaMailSender javaMailSender;
     @Autowired
     HttpServletRequest httpServletRequest;
+    @Autowired
+    SettingRepository settingRepository;
 
     @Override
     public ResponseEntity<Response> register(UserDTO user) {
@@ -57,6 +56,7 @@ public class UserServiceImpl extends GlobalService implements UserService {
         registerUser.setUsername(user.getUsername());
         registerUser.setFirstName(user.getFirstName());
         registerUser.setLastName(user.getLastName());
+        registerUser.setStatus(Status.Active);
         registerUser.setCreatedDateTime(DateTimeUtil.currentDateTime());
         registerUser.setUpdateDateTime(registerUser.getCreatedDateTime());
         repository.save(registerUser);
@@ -77,6 +77,18 @@ public class UserServiceImpl extends GlobalService implements UserService {
         userDTO.setEmail(user.getEmail());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
+        userDTO.setMobileNo(user.getMobileNo());
+        userDTO.setGender(user.getGender() != null ? user.getGender().toString(): null);
+        userDTO.setStatus(user.getStatus().toString());
+        userDTO.setDateOfBirth(DateTimeUtil.formatDate(user.getDateOfBirth(), DateTimeUtil.DATE_FORMAT_UI_EDIT));
+        List<Setting> settings = settingRepository.findBy(this.getUserId());
+        Optional.ofNullable(settings).orElseGet(Collections::emptyList).stream().sorted(Comparator.comparing(Setting::getKeyword)).forEach(setting -> {
+            var settingDTO = new SettingDTO();
+            settingDTO.setId(setting.getId());
+            settingDTO.setValue(setting.getValue());
+            settingDTO.setKeyword(setting.getKeyword());
+            userDTO.getSettings().add(settingDTO);
+        });
         return userDTO;
     }
 
@@ -171,6 +183,30 @@ public class UserServiceImpl extends GlobalService implements UserService {
                     response.addMessage("Your password reset link has expired. Please request a new password reset link.");
                 }
             }
+        }
+        return response;
+    }
+
+    @Override
+    public Response update(UserDTO userDTO) {
+        var response = new Response(false);
+        if(userDTO != null && userDTO.getId() != null && userDTO.getId() > 0) {
+            User user = repository.getReferenceById(userDTO.getId());
+            if(StringUtils.hasText(userDTO.getGender())) {
+                user.setGender(Gender.valueOf(userDTO.getGender()));
+            }else {
+                user.setGender(null);
+            }
+            if(StringUtils.hasText(userDTO.getDateOfBirth())) {
+                user.setDateOfBirth(DateTimeUtil.formatDate(userDTO.getDateOfBirth(), DateTimeUtil.DATE_FORMAT_UI_EDIT));
+            }else {
+                user.setDateOfBirth(null);
+            }
+            user.setMobileNo(userDTO.getMobileNo());
+            user.setUpdateDateTime(DateTimeUtil.currentDateTime());
+            repository.save(user);
+            response = new Response();
+            response.setPersistId(user.getId());
         }
         return response;
     }

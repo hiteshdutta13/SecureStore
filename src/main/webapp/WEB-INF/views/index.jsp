@@ -21,7 +21,7 @@
   <script src="${contextPath}/js/thirdparty/xlsx.core.min.js"></script>
 </head>
 <body class="bg-light bg-gradient">
-    <div class="container" id="container" data-context="${contextPath}">
+    <div class="container" id="container" data-context="${contextPath}" data-page="${page}">
         <nav class="navbar navbar-expand-sm">
           <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="${contextPath}">
@@ -33,7 +33,7 @@
                        Hello, ${user.firstName}
                   </a>
                   <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="${contextPath}/"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
+                    <li><a class="dropdown-item" href="${contextPath}/settings"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a></li>
                   </ul>
@@ -43,32 +43,53 @@
         </nav>
         <div class="row">
           <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
-               <div class="btn-group">
-                 <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                   <i class="fas fa-plus"></i> New
-                 </button>
-                 <ul class="dropdown-menu">
-                   <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="fa fa-folder-plus text-success"></i> New Folder</button></li>
-                   <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="fa fa-file-upload text-success"></i> File Upload</button></li>
-                 </ul>
-               </div>
-               <hr>
+               <c:if test="${page eq 'default'}">
+                   <div class="btn-group">
+                     <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                       <i class="fas fa-plus"></i> New
+                     </button>
+                     <ul class="dropdown-menu">
+                       <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="fa fa-folder-plus text-success"></i> New Folder</button></li>
+                       <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="fa fa-file-upload text-success"></i> File Upload</button></li>
+                     </ul>
+                   </div>
+                   <hr>
+               </c:if>
                <ul class="list-group list-group-flush">
-                 <li class="list-group-item rounded-5 active"><a class="text-decoration-none text-dark" href="${contextPath}/"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
+                 <li class="list-group-item rounded-5 ${page eq 'default' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
+                 <li class="list-group-item rounded-5 ${page eq 'settings' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/settings"><i class="fa fa-cog fa-fw text-success"></i> Settings</a></li>
                </ul>
           </div>
           <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
               <div class="card">
-                <div class="card-header fw-bold"><i class="fa fa-hard-drive text-success"></i> My Drive
-                    <div class="float-end">
-                        <button class="btn btn-sm btnView" title="List View" data-value="list"><i class="fa fa-bars"></i></button>
-                        <button class="btn btn-sm btnView active" title="Grid View" data-value="grid"><i class="fa fa-th-large"></i></button>
-                    </div>
+                <div class="card-header fw-bold">
+                    <c:choose>
+                        <c:when test="${page eq 'settings'}">
+                            <i class="fa fa-cog fa-fw text-success"></i> Settings
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fa fa-hard-drive text-success"></i> My Drive
+                            <div class="float-end">
+                                <button class="btn btnView btn-xs" title="List View" data-value="list"><i class="fa fa-bars"></i></button>
+                                <button class="btn btnView btn-xs active" title="Grid View" data-value="grid"><i class="fa fa-th-large"></i></button>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
-                <div aria-label="breadcrumb" class="row mx-0 px-2">
-                  <ol class="breadcrumb border-bottom p-2"><!--Dynamically --></ol>
-                </div>
-                <div class="card-body p-3 driveContent"><!-- Dynamically will be created --> </div>
+                <c:choose>
+                   <c:when test="${page eq 'settings'}">
+                        <div aria-label="breadcrumb" class="row mx-0 px-2">
+                          <ol class="breadcrumb border-bottom p-2">Settings</ol>
+                        </div>
+                        <div class="card-body p-3"><jsp:include page="settings.jsp"/></div>
+                   </c:when>
+                   <c:otherwise>
+                        <div aria-label="breadcrumb" class="row mx-0 px-2">
+                          <ol class="breadcrumb border-bottom p-2"><!--Dynamically --></ol>
+                        </div>
+                        <div class="card-body p-3 driveContent"><!-- Dynamically will be created --> </div>
+                    </c:otherwise>
+                </c:choose>
               </div>
           </div>
         </div>

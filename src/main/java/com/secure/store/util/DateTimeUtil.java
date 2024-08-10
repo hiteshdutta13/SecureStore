@@ -1,12 +1,14 @@
 package com.secure.store.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateTimeUtil {
     public static final String DATETIME_FORMAT_DB = "yyyy-MMM-dd HH:mm a";
-    public static final String DATE_TIME_SS_FORMAT_UI = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_TIME_FORMAT_UI = "dd-MMM-yyyy HH:mm";
+    public static final String DATE_FORMAT_UI = "dd-MMM-yyyy";
+    public static final String DATE_FORMAT_UI_EDIT = "yyyy-MM-dd";
     public static Date currentDateTime() {
         try {
             Date date = new Date();
@@ -18,6 +20,15 @@ public class DateTimeUtil {
         } return null;
     }
 
+    public static Date formatDate(String strDate, String format) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            return formatter.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } return null;
+    }
+
     public static String formatDate(Date date, String format) {
         try {
             if (date != null) {
@@ -26,6 +37,6 @@ public class DateTimeUtil {
             }
         } catch(Exception exception) {
             exception.printStackTrace();
-        } return "";
+        } return null;
     }
 }

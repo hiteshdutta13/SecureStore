@@ -19,7 +19,7 @@ public class TokenUtil {
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
     public static String generateToken() {
-        byte[] randomBytes = new byte[24];
+        byte[] randomBytes = new byte[55];
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
     }
