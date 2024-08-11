@@ -20,7 +20,7 @@ public class LoginController {
     public String askToLogin(@RequestParam(value = "error", required = false, defaultValue = "0") int error, Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
         if(error != 0) {
-            model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, "Invalid username or password");
+            model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, "Invalid username or password.");
         }
         return PageConstants.PAGE_SIGN_IN;
     }

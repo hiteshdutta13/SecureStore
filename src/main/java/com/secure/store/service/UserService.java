@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface UserService {
-    ResponseEntity<Response> register(UserDTO userDTO);
+    Response register(UserDTO userDTO);
     UserDTO get(Long id);
     UserDTO getActive();
     Response resetPassword(String email);

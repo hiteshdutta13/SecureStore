@@ -16,7 +16,6 @@ import com.secure.store.util.TokenUtil;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,28 +38,34 @@ public class UserServiceImpl extends GlobalService implements UserService {
     SettingRepository settingRepository;
 
     @Override
-    public ResponseEntity<Response> register(UserDTO user) {
-        if(repository.findBy(user.getUsername()).isPresent() || repository.findByEmail(user.getEmail()).isPresent()){
+    public Response register(UserDTO user) {
+        try {
+            if (repository.findBy(user.getUsername()).isPresent()) {
+                var response = new Response(false);
+                response.addMessage("Username already registered.");
+                return response;
+            } else if (repository.findByEmail(user.getEmail()).isPresent()) {
+                var response = new Response(false);
+                response.addMessage("Email already registered.");
+                return response;
+            }
+            var registerUser = new User();
+            var passwordEncoder = new BCryptPasswordEncoder();
+            registerUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            registerUser.setEmail(user.getEmail());
+            registerUser.setUsername(user.getUsername());
+            registerUser.setFirstName(user.getFirstName());
+            registerUser.setLastName(user.getLastName());
+            registerUser.setStatus(Status.Active);
+            registerUser.setCreatedDateTime(DateTimeUtil.currentDateTime());
+            registerUser.setUpdateDateTime(registerUser.getCreatedDateTime());
+            repository.save(registerUser);
+            return new Response();
+        }catch (Exception e) {
             var response = new Response(false);
-            var advisory = new Advisory();
-            advisory.setCode(1001);
-            advisory.setMessage("Username or email already registered");
-            response.getAdvisories().add(advisory);
-            return ResponseEntity.badRequest().body(response);
+            response.addMessage(e.getMessage());
+            return response;
         }
-        var registerUser = new User();
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        registerUser.setPassword(encodedPassword);
-        registerUser.setEmail(user.getEmail());
-        registerUser.setUsername(user.getUsername());
-        registerUser.setFirstName(user.getFirstName());
-        registerUser.setLastName(user.getLastName());
-        registerUser.setStatus(Status.Active);
-        registerUser.setCreatedDateTime(DateTimeUtil.currentDateTime());
-        registerUser.setUpdateDateTime(registerUser.getCreatedDateTime());
-        repository.save(registerUser);
-        return null;
     }
 
     @Override

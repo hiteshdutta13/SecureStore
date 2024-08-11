@@ -17,8 +17,13 @@ public class Register {
     @PostMapping
     public String registerUser(@ModelAttribute UserDTO userDto, Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
-        userService.register(userDto);
-        return "redirect:/login";
+        var response = userService.register(userDto);
+        if(response.isSuccess()) {
+            return "redirect:/login";
+        }else {
+            model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, response.getMessage());
+            return register(model);
+        }
     }
 
     @GetMapping

@@ -21,7 +21,7 @@
     <div class="container">
         <div class="row pt-5">
             <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-xxl-8 fw-bold">
-                <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" class="rounded-2"/> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
+                <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" /> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
             </div>
             <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4"><!-- empty --></div>
         </div>
@@ -61,8 +61,11 @@
                                 <label for="password" class="form-label">Password:</label>
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" autocomplete="off" required>
                               </div>
+                              <c:if test="${not empty message}">
+                                  <div class="alert alert-danger">${message}</div>
+                                </c:if>
                               <div class="mb-3">
-                                    <button type="submit" class="btn btn-success">Register</button>
+                                   <button type="submit" class="btn btn-success">Register</button>
                               </div>
                         </form>
                     </div>

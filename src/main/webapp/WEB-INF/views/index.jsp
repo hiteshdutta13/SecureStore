@@ -25,7 +25,7 @@
         <nav class="navbar navbar-expand-sm">
           <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="${contextPath}">
-              <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" class="rounded-2"/> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
+              <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" /> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
             </a>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
                 <li class="nav-item dropdown">
