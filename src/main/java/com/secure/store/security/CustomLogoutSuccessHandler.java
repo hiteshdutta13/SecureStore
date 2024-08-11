@@ -1,4 +1,4 @@
-package com.secure.store.service;
+package com.secure.store.security;
 
 import com.secure.store.entity.User;
 import com.secure.store.repository.UserRepository;

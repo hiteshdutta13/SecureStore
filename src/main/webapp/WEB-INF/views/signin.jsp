@@ -49,11 +49,14 @@
                                 <label for="signInPassword" class="form-label">Password:</label>
                                 <input type="password" class="form-control" id="signInPassword" placeholder="Enter password" name="password" autocomplete="off" required>
                               </div>
+                              <c:if test="${not empty message}">
+                                <div class="alert alert-danger">${message}</div>
+                              </c:if>
                               <div class="mb-3">
                                 <a href="${contextPath}/reset/password" class="text-decoration-none"> Forgot password ?</a>
                               </div>
                               <div class="mb-3">
-                                    <button type="submit" class="btn btn-success">Login</button>
+                                   <button type="submit" class="btn btn-success">Login</button>
                               </div>
                         </form>
                   </div>

@@ -1,7 +1,8 @@
 package com.secure.store.config;
 
-import com.secure.store.service.CustomLogoutSuccessHandler;
-import com.secure.store.service.CustomUserDetailsService;
+import com.secure.store.security.CustomAuthenticationFailureHandler;
+import com.secure.store.security.CustomLogoutSuccessHandler;
+import com.secure.store.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +32,10 @@ public class WebSecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -43,7 +49,7 @@ public class WebSecurityConfig {
     SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.requestMatchers("/", "/settings", "/api/**", "/js/**").authenticated().anyRequest().permitAll())
-        .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/").permitAll())
+        .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/").failureHandler(customAuthenticationFailureHandler()).permitAll())
         .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(customLogoutSuccessHandler).invalidateHttpSession(true).deleteCookies("JSESSIONID"));
         return http.build();
     }

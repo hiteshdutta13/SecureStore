@@ -42,7 +42,7 @@
                                 <form action="<c:url value='/reset/password/email' />" method="post" class="needs-validation" autocomplete="off">
                                       <div class="mb-3 mt-3">
                                         <label for="emailAddress" class="form-label">Email:</label>
-                                        <input type="email" class="form-control ${message ? 'is-invalid':''}" id="emailAddress" placeholder="Enter registered email" name="email" required>
+                                        <input type="email" class="form-control ${not empty message ? 'is-invalid':''}" id="emailAddress" placeholder="Enter registered email" name="email" required value="${requestedEmail}"/>
                                         <div class="invalid-feedback">${message}</div>
                                       </div>
                                       <div class="mb-3">

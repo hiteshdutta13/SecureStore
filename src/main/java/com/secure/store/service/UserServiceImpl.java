@@ -173,8 +173,7 @@ public class UserServiceImpl extends GlobalService implements UserService {
                 if(optionalUserRequest.isPresent()) {
                     var user = optionalUserRequest.get().getUser();
                     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-                    String encodedPassword = passwordEncoder.encode(user.getPassword());
-                    user.setPassword(encodedPassword);
+                    user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
                     user.setUpdateDateTime(DateTimeUtil.currentDateTime());
                     repository.save(user);
                     response.addMessage("Password has been reset successfully.");

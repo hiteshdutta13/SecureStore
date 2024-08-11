@@ -46,6 +46,7 @@ public class ResetPassword {
         var response = userService.changePassword(resetPassword);
         if(response.isSuccess()) {
             model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "success");
+            model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, response.getMessage());
         }else {
             model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "change");
             model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, response.getMessage());
@@ -57,12 +58,14 @@ public class ResetPassword {
     public String sendResetLinkToEmail(@ModelAttribute UserDTO userDto, Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, new UserDTO());
         var response = userService.resetPassword(userDto.getEmail());
+        model.addAttribute("requestedEmail", "");
         if(response.isSuccess()) {
             model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "token");
             model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, response.getMessage());
         }else {
             model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "email");
             model.addAttribute(PageConstants.ATTRIBUTE_MESSAGE, response.getMessage());
+            model.addAttribute("requestedEmail", userDto.getEmail());
         }
         return PageConstants.PAGE_RESET_PASSWORD;
     }
