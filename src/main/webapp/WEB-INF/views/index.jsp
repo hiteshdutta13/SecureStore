@@ -28,14 +28,17 @@
               <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" /> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
             </a>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-block d-sm-none">
+                     Hi, ${user.firstName}
+                </li>
+                <li class="nav-item dropdown d-none d-sm-block">
                   <a class="nav-link text-dark dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                       Hello, ${user.firstName}
+                       Hi, ${user.firstName}
                   </a>
-                  <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="${contextPath}/settings"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw"></i> Log Out</a></li>
+                    <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a></li>
                   </ul>
                 </li>
              </ul>
@@ -55,9 +58,10 @@
                    </div>
                    <hr>
                </c:if>
-               <ul class="list-group list-group-flush">
+               <ul class="list-group list-group-flush mb-2">
                  <li class="list-group-item rounded-5 ${page eq 'default' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
                  <li class="list-group-item rounded-5 ${page eq 'settings' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/settings"><i class="fa fa-cog fa-fw text-success"></i> Settings</a></li>
+                 <li class="list-group-item rounded-5 d-block d-sm-none"><a class="text-decoration-none text-dark" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw text-success"></i> Logout</a></li>
                </ul>
           </div>
           <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
@@ -69,7 +73,7 @@
                         </c:when>
                         <c:otherwise>
                             <i class="fa fa-hard-drive text-success"></i> My Drive
-                            <div class="float-end">
+                            <div class="float-end d-none d-sm-block">
                                 <button class="btn btnView btn-xs" title="List View" data-value="list"><i class="fa fa-bars"></i></button>
                                 <button class="btn btnView btn-xs active" title="Grid View" data-value="grid"><i class="fa fa-th-large"></i></button>
                             </div>
@@ -99,7 +103,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="createFolderModalLabel">Create Folder</h5>
+            <h5 class="modal-title text-ellipsis" id="createFolderModalLabel">Create Folder</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -120,7 +124,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="uploadFileModalLabel">Upload File</h5>
+            <h5 class="modal-title text-ellipsis" id="uploadFileModalLabel">Upload File</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -140,7 +144,7 @@
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="fileViewModalLabel"></h5>
+            <h5 class="modal-title text-ellipsis" id="fileViewModalLabel"><!-- Dynamically --></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body"><!-- Dynamically --></div>
@@ -151,7 +155,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="fileShareModalLabel"></h5>
+            <h5 class="modal-title text-ellipsis" id="fileShareModalLabel"><!-- Dynamically --> </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body"><!-- Dynamically --></div>

@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="row">
     <div class="col-md-3 border-right">
-        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+        <div class="d-flex flex-column align-items-center text-center p-3 py-3">
             <i class="fa-regular fa-circle-user text-success fs-75"></i>
-            <span class="font-weight-bold mt-3">${user.firstName}</span><span class="text-black-50">${user.email}</span><span> </span>
+            <span class="font-weight-bold mt-3">${user.firstName}</span><span class="text-black-50 fs-6 w-100 fw-lighter">${user.email}</span>
         </div>
     </div>
     <div class="col-md-9 border-right">
