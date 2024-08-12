@@ -16,12 +16,7 @@ public class FolderAPI {
 
     @PostMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> folder(@RequestBody FolderDTO folder) {
-        var response = folderService.create(folder);
-        if(response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        }else {
-            return ResponseEntity.badRequest().body(response);
-        }
+        return ResponseEntity.ok(folderService.create(folder));
     }
 
     @PutMapping(value = "/folder", consumes = MediaType.APPLICATION_JSON_VALUE)

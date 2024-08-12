@@ -34,19 +34,29 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         var response = new Response();
         var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
         if(preFix.isPresent() && folderDTO != null && StringUtils.hasText(folderDTO.getName())) {
-            var path = FileUtil.FORWARD_SLASH+folderDTO.getName();
+            var path = FileUtil.FORWARD_SLASH+folderDTO.getName().trim();
             var folder = new Folder();
             if(folderDTO.getParent() != null && folderDTO.getParent().getId() != null && folderDTO.getParent().getId() > 0) {
-                Optional<Folder> optionalFolder = folderRepository.findById(folderDTO.getParent().getId());
-                if(optionalFolder.isPresent()) {
-                    path = optionalFolder.get().getPath()+FileUtil.FORWARD_SLASH+folderDTO.getName();
-                    var parent = new Folder();
-                    parent.setId(folderDTO.getParent().getId());
-                    folder.setParent(parent);
+                if(folderRepository.findBy(this.getUserId(), folderDTO.getParent().getId(), folderDTO.getName().trim()).isPresent()) {
+                    response = new Response(false);
+                    response.addMessage("A folder named '"+folderDTO.getName().trim()+"' already exists. Please choose a different name.");
+                    return response;
+                }else {
+                    Optional<Folder> optionalFolder = folderRepository.findById(folderDTO.getParent().getId());
+                    if (optionalFolder.isPresent()) {
+                        path = optionalFolder.get().getPath() + FileUtil.FORWARD_SLASH + folderDTO.getName().trim();
+                        var parent = new Folder();
+                        parent.setId(folderDTO.getParent().getId());
+                        folder.setParent(parent);
+                    }
                 }
+            }else if(folderRepository.findBy(this.getUserId(), folderDTO.getName().trim()).isPresent()) {
+                response = new Response(false);
+                response.addMessage("A folder named '"+folderDTO.getName().trim()+"' already exists. Please choose a different name.");
+                return response;
             }
             FileUtil.createDirectory(FileUtil.docFilePath(preFix.get().getValue(), this.getUserId())+path);
-            folder.setName(folderDTO.getName());
+            folder.setName(folderDTO.getName().trim());
             folder.setPath(path);
             folder.setUser(this.getUser());
             folder.setCreatedDateTime(DateTimeUtil.currentDateTime());

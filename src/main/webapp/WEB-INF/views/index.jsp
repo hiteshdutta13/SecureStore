@@ -24,7 +24,7 @@
     <div class="container" id="container" data-context="${contextPath}" data-page="${page}">
         <nav class="navbar navbar-expand-sm">
           <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="${contextPath}">
+            <a class="navbar-brand fw-bold" href="${contextPath}/drive">
               <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" /> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
             </a>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
@@ -36,7 +36,7 @@
                        Hi, ${user.firstName}
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="${contextPath}/settings"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
+                    <li><a class="dropdown-item" href="${contextPath}/drive/settings"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a></li>
                   </ul>
@@ -52,15 +52,16 @@
                        <i class="fas fa-plus"></i> New
                      </button>
                      <ul class="dropdown-menu">
-                       <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="fa fa-folder-plus text-success"></i> New Folder</button></li>
-                       <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="fa fa-file-upload text-success"></i> File Upload</button></li>
+                       <li><button type="button" class="dropdown-item btnNewFolder" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="fa fa-folder-plus text-success"></i> New Folder</button></li>
+                       <li><button type="button" class="dropdown-item btnNewFile" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="fa fa-file-upload text-success"></i> File Upload</button></li>
                      </ul>
                    </div>
                    <hr>
                </c:if>
                <ul class="list-group list-group-flush mb-2">
-                 <li class="list-group-item rounded-5 ${page eq 'default' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
-                 <li class="list-group-item rounded-5 ${page eq 'settings' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/settings"><i class="fa fa-cog fa-fw text-success"></i> Settings</a></li>
+                 <li class="list-group-item rounded-5 ${page eq 'default' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
+                 <li class="list-group-item rounded-5 ${page eq 'settings' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/settings"><i class="fa fa-cog fa-fw text-success"></i> Settings</a></li>
+                 <li class="list-group-item rounded-5 ${page eq 'bin' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/bin"><i class="fa-solid fa-trash-can text-success"></i> Bin</a></li>
                  <li class="list-group-item rounded-5 d-block d-sm-none"><a class="text-decoration-none text-dark" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw text-success"></i> Logout</a></li>
                </ul>
           </div>
@@ -68,6 +69,9 @@
               <div class="card">
                 <div class="card-header fw-bold">
                     <c:choose>
+                        <c:when test="${page eq 'bin'}">
+                            <i class="fa-solid fa-trash-can text-success"></i> Bin
+                        </c:when>
                         <c:when test="${page eq 'settings'}">
                             <i class="fa fa-cog fa-fw text-success"></i> Settings
                         </c:when>
@@ -81,6 +85,12 @@
                     </c:choose>
                 </div>
                 <c:choose>
+                   <c:when test="${page eq 'bin'}">
+                        <div aria-label="breadcrumb" class="row mx-0 px-2">
+                          <ol class="breadcrumb border-bottom p-2">Bin</ol>
+                        </div>
+                        <div class="card-body p-3"><jsp:include page="bin.jsp"/></div>
+                   </c:when>
                    <c:when test="${page eq 'settings'}">
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
                           <ol class="breadcrumb border-bottom p-2">Settings</ol>
@@ -100,7 +110,7 @@
         <jsp:include page="footer.jsp"/>
     </div>
     <div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title text-ellipsis" id="createFolderModalLabel">Create Folder</h5>
@@ -121,7 +131,7 @@
       </div>
     </div>
     <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title text-ellipsis" id="uploadFileModalLabel">Upload File</h5>
