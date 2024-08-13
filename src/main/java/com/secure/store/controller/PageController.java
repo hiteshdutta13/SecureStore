@@ -1,6 +1,7 @@
 package com.secure.store.controller;
 
 import com.secure.store.constant.PageConstants;
+import com.secure.store.service.PlanService;
 import com.secure.store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PageController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    PlanService planService;
+
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
@@ -35,6 +40,14 @@ public class PageController {
     public String bin(Model model) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
         model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "bin");
+        return PageConstants.PAGE_INDEX;
+    }
+
+    @GetMapping("/drive/upgrade")
+    public String upgrade(Model model) {
+        model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
+        model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "upgrade");
+        model.addAttribute("plans", planService.getAll());
         return PageConstants.PAGE_INDEX;
     }
 }

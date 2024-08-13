@@ -62,13 +62,24 @@
                  <li class="list-group-item rounded-5 ${page eq 'default' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
                  <li class="list-group-item rounded-5 ${page eq 'settings' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/settings"><i class="fa fa-cog fa-fw text-success"></i> Settings</a></li>
                  <li class="list-group-item rounded-5 ${page eq 'bin' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/bin"><i class="fa-solid fa-trash-can text-success"></i> Bin</a></li>
+                 <li class="list-group-item rounded-5 d-none d-sm-block ${page eq 'upgrade' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/upgrade"><i class="fa-solid fa-cloud text-success"></i> Upgrade</a></li>
                  <li class="list-group-item rounded-5 d-block d-sm-none"><a class="text-decoration-none text-dark" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw text-success"></i> Logout</a></li>
                </ul>
+               <div class="d-none d-sm-block">
+                   <hr/>
+                   Storage
+                   <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                       <div class="progress-bar bg-success" style="width: 25%">25%</div>
+                   </div>
+               </div>
           </div>
           <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
               <div class="card">
                 <div class="card-header fw-bold">
                     <c:choose>
+                        <c:when test="${page eq 'upgrade'}">
+                            <i class="fa-solid fa-cloud text-success"></i> Upgrade
+                        </c:when>
                         <c:when test="${page eq 'bin'}">
                             <i class="fa-solid fa-trash-can text-success"></i> Bin
                         </c:when>
@@ -85,6 +96,12 @@
                     </c:choose>
                 </div>
                 <c:choose>
+                   <c:when test="${page eq 'upgrade'}">
+                        <div aria-label="breadcrumb" class="row mx-0 px-2">
+                          <ol class="breadcrumb border-bottom p-2">Upgrade</ol>
+                        </div>
+                        <div class="card-body p-3"><jsp:include page="pricing.jsp"/></div>
+                   </c:when>
                    <c:when test="${page eq 'bin'}">
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
                           <ol class="breadcrumb border-bottom p-2">Bin</ol>
