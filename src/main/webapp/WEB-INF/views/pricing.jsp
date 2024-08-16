@@ -2,7 +2,7 @@
 <div class="container">
     <div class="mt-2">
       <c:forEach var="plan" items="${plans}">
-          <div class="card p-3 mb-2 ${plan.price eq 0 ? 'bg-success bg-gradient':''}">
+          <div class="card p-3 mb-2 ${user.plan.id eq plan.id ? 'bg-success bg-gradient':''}">
             <div class="row align-items-center">
                 <div class="col-12 col-md-4">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">

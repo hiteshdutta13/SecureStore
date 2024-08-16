@@ -1,5 +1,7 @@
 package com.secure.store.util;
 
+import com.secure.store.modal.StorageInfo;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +47,15 @@ public class FileUtil {
         if (originalFilename != null && originalFilename.contains(DOT)) {
             return originalFilename.substring(originalFilename.lastIndexOf(DOT) + 1);
         } return "";
+    }
+
+    public static StorageInfo calculate(long totalSpace, long occupiedSpace) {
+        var storageInfo = new StorageInfo();
+        storageInfo.setOccupiedSpace(occupiedSpace);
+        storageInfo.setTotalSpace(totalSpace);
+        storageInfo.setFreeSpace(totalSpace - occupiedSpace);
+        storageInfo.setOccupiedSpaceInPercentage(Math.round(((float) occupiedSpace / totalSpace) * 100));
+        return storageInfo;
     }
 
     public static String docFilePath(String preFix, Long userId) {

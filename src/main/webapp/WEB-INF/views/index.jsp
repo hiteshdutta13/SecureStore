@@ -67,9 +67,9 @@
                </ul>
                <div class="d-none d-sm-block">
                    <hr/>
-                   Storage
-                   <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                       <div class="progress-bar bg-success" style="width: 25%">25%</div>
+                   <span class="badge bg-light text-dark">Storage: ${user.plan.storage} ${user.plan.storageType}</span>
+                   <div class="progress" role="progressbar" aria-label="storage percentage" aria-valuenow="${user.storageInfo.occupiedSpaceInPercentage}" aria-valuemin="0" aria-valuemax="100">
+                       <div class="progress-bar bg-success" style="width: ${user.storageInfo.occupiedSpaceInPercentage}%">${user.storageInfo.occupiedSpaceInPercentage}%</div>
                    </div>
                </div>
           </div>

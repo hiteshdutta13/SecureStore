@@ -1,17 +1,14 @@
 package com.secure.store.service;
 
-import com.secure.store.entity.Setting;
-import com.secure.store.entity.User;
-import com.secure.store.entity.UserRequest;
+import com.secure.store.entity.*;
 import com.secure.store.entity.util.Gender;
 import com.secure.store.entity.util.RequestType;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.*;
-import com.secure.store.repository.SettingRepository;
-import com.secure.store.repository.UserRepository;
-import com.secure.store.repository.UserRequestRepository;
+import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.EmailUtil;
+import com.secure.store.util.FileUtil;
 import com.secure.store.util.TokenUtil;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class UserServiceImpl extends GlobalService implements UserService {
@@ -36,6 +34,12 @@ public class UserServiceImpl extends GlobalService implements UserService {
     HttpServletRequest httpServletRequest;
     @Autowired
     SettingRepository settingRepository;
+    @Autowired
+    PlanRepository planRepository;
+    @Autowired
+    UserPlanRepository userPlanRepository;
+    @Autowired
+    FileRepository fileRepository;
 
     @Override
     public Response register(UserDTO user) {
@@ -60,6 +64,16 @@ public class UserServiceImpl extends GlobalService implements UserService {
             registerUser.setCreatedDateTime(DateTimeUtil.currentDateTime());
             registerUser.setUpdateDateTime(registerUser.getCreatedDateTime());
             repository.save(registerUser);
+            Optional<Plan> plan = planRepository.findBy("Basic");
+            if(plan.isPresent()) {
+                var userPlan = new UserPlan();
+                var userId = new User();
+                userId.setId(registerUser.getId());
+                userPlan.setUser(userId);
+                userPlan.setStatus(Status.Active);
+                userPlan.setPlan(plan.get());
+                userPlanRepository.save(userPlan);
+            }
             return new Response();
         }catch (Exception e) {
             var response = new Response(false);
@@ -94,6 +108,26 @@ public class UserServiceImpl extends GlobalService implements UserService {
             settingDTO.setKeyword(setting.getKeyword());
             userDTO.getSettings().add(settingDTO);
         });
+        Optional<UserPlan> optionalUserPlan = userPlanRepository.findBy(this.getUserId());
+        if(optionalUserPlan.isPresent()) {
+            var plan = optionalUserPlan.get().getPlan();
+            var planDTO = new PlanDTO();
+            planDTO.setId(plan.getId());
+            planDTO.setName(plan.getName());
+            planDTO.setPrice(plan.getPrice());
+            planDTO.setShare(plan.getShare());
+            planDTO.setStorage(plan.getStorage());
+            planDTO.setPricingType(plan.getPricingType().toString());
+            planDTO.setStorageType(plan.getStorageType().toString());
+            planDTO.setStatus(plan.getStatus().toString());
+            userDTO.setPlan(planDTO);
+            List<File> files = fileRepository.findBy(this.getUserId(), Status.Active);
+            AtomicLong atomicLong = new AtomicLong();
+            Optional.ofNullable(files).orElseGet(Collections::emptyList).forEach(file -> {
+                atomicLong.set(atomicLong.get()+file.getSize());
+            });
+            userDTO.setStorageInfo(FileUtil.calculate((plan.getStorage() * 1024 * 1024), atomicLong.get()));
+        }
         return userDTO;
     }
 

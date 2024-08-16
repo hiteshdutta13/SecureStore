@@ -18,4 +18,6 @@ public class UserDTO {
     private String gender;
     private String status;
     private List<SettingDTO> settings = new ArrayList<>();
+    private PlanDTO plan;
+    private StorageInfo storageInfo;
 }
