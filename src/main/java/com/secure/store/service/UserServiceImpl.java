@@ -64,7 +64,7 @@ public class UserServiceImpl extends GlobalService implements UserService {
             registerUser.setCreatedDateTime(DateTimeUtil.currentDateTime());
             registerUser.setUpdateDateTime(registerUser.getCreatedDateTime());
             repository.save(registerUser);
-            Optional<Plan> plan = planRepository.findBy("Basic");
+            Optional<Plan> plan = planRepository.findBy("Basic Vault");
             if(plan.isPresent()) {
                 var userPlan = new UserPlan();
                 var userId = new User();

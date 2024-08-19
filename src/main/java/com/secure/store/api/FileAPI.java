@@ -1,5 +1,6 @@
 package com.secure.store.api;
 
+import com.secure.store.modal.FileDTO;
 import com.secure.store.modal.Response;
 import com.secure.store.modal.SharedFileDTO;
 import com.secure.store.service.FileService;
@@ -22,6 +23,17 @@ public class FileAPI {
     public ResponseEntity<Response> upload( @PathVariable("id") Long folderId,
                                             @RequestParam("file") MultipartFile file) {
         var response = fileService.upload(folderId, file);
+        if(response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @ResponseBody
+    @PutMapping(value = "/rename")
+    public ResponseEntity<Response> rename(@RequestBody FileDTO fileDTO) {
+        var response = fileService.rename(fileDTO);
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {

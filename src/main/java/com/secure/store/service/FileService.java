@@ -14,4 +14,5 @@ public interface FileService {
     ResponseEntity<Resource> download(Long id, boolean shared);
     FileDTO get(Long id);
     Response delete(Long id);
+    Response rename(FileDTO fileDTO);
 }

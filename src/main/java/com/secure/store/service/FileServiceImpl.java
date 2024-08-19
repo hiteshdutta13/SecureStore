@@ -202,6 +202,8 @@ public class FileServiceImpl extends GlobalService implements FileService {
         fileDTO.setOriginalName(file.getOriginalName());
         fileDTO.setSize(file.getSize());
         fileDTO.setPath(file.getPath());
+        fileDTO.setExtension(file.getName().split("\\.")[1]);
+        fileDTO.setOriginalName(file.getOriginalName().split("\\."+fileDTO.getExtension())[0]);
         if(file.getFolder() != null) {
             fileDTO.setFolderId(file.getFolder().getId());
         }
@@ -217,5 +219,17 @@ public class FileServiceImpl extends GlobalService implements FileService {
         file.setUpdatedDateTime(DateTimeUtil.currentDateTime());
         fileRepository.save(file);
         return new Response();
+    }
+
+    @Override
+    public Response rename(FileDTO fileDTO) {
+        if(fileDTO != null && fileDTO.getId() != null && fileDTO.getId() > 0) {
+            File file = fileRepository.getReferenceById(fileDTO.getId());
+            file.setOriginalName(fileDTO.getName());
+            fileRepository.save(file);
+            return new Response();
+        }else  {
+            return new Response(false);
+        }
     }
 }

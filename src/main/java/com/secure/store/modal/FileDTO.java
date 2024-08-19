@@ -8,6 +8,7 @@ public class FileDTO {
     private String name;
     private String originalName;
     private String path;
+    private String extension;
     private String type;
     private Long size;
     private String status;

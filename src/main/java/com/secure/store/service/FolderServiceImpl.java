@@ -164,7 +164,8 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         fileDTO.setId(file.getId());
         fileDTO.setName(file.getName());
         fileDTO.setType(file.getContentType());
-        fileDTO.setOriginalName(file.getOriginalName());
+        fileDTO.setExtension(file.getName().split("\\.")[1]);
+        fileDTO.setOriginalName(file.getOriginalName().split("\\."+fileDTO.getExtension())[0]);
         fileDTO.setSize(file.getSize());
         fileDTO.setPath(file.getPath());
         if(file.getFolder() != null) {
