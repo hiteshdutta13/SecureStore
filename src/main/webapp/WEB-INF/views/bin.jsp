@@ -1,1 +1,1 @@
-<h5>Bin</h5>
+Your bin is empty. There's nothing to clear!

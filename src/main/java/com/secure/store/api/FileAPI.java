@@ -68,7 +68,7 @@ public class FileAPI {
 
     @ResponseBody
     @RequestMapping (value="/other/{id}")
-    public byte[] text(@PathVariable("id") Long id,
+    public byte[] other(@PathVariable("id") Long id,
                        @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }

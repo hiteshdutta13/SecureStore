@@ -2,7 +2,7 @@
 <div class="container">
     <div class="mt-2">
       <c:forEach var="plan" items="${plans}">
-          <div class="card p-3 mb-2 ${user.plan.id eq plan.id ? 'bg-success bg-gradient':''}">
+          <div class="card p-3 mb-2">
             <div class="row align-items-center">
                 <div class="col-12 col-md-4">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
@@ -33,9 +33,17 @@
                     </c:choose>
                 </ul>
                 <div class="col-12 col-md-4 text-center">
-                    <c:if test="${plan.price gt 0}">
-                        <a href="${contextPath}/drive/upgrade" class="f-n-hover btn btn-dark btn-raised px-4 py-25 w-75 text-600">Buy</a>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${user.plan.id eq plan.id}">
+                            <a href="javascript:;" class="btn btn-success btn-raised px-4 py-25 w-75 text-600">Active</a>
+                        </c:when>
+                        <c:when test="${plan.price gt 0}">
+                            <a href="${contextPath}/drive/upgrade" class="f-n-hover btn btn-dark btn-raised px-4 py-25 w-75 text-600">Buy</a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${contextPath}/drive/upgrade" class="f-n-hover btn btn-dark btn-raised px-4 py-25 w-75 text-600">Free</a>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
           </div>

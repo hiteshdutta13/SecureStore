@@ -26,10 +26,10 @@
             <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4"><!-- empty --></div>
         </div>
         <div class="row">
-            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-xxl-8 border-end">
+            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-xxl-8 border-end d-none d-sm-block">
                  <jsp:include page="securestore.jsp"/>
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
+            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4 mt-2">
                 <ul class="nav nav-pills nav-justified" id="myTab" role="tablist">
                   <li class="nav-item" role="presentation">
                     <button class="nav-link rounded-0 rounded-top text-success fw-bold active" id="signin-tab" data-bs-toggle="tab" data-bs-target="#signin-tab-pane" type="button" role="tab" aria-controls="signin-tab-pane" aria-selected="true">Sign In</button>
