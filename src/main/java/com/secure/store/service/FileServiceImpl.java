@@ -225,7 +225,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
     public Response rename(FileDTO fileDTO) {
         if(fileDTO != null && fileDTO.getId() != null && fileDTO.getId() > 0) {
             File file = fileRepository.getReferenceById(fileDTO.getId());
-            file.setOriginalName(fileDTO.getName());
+            file.setOriginalName(fileDTO.getName()+"."+file.getName().split("\\.")[1]);
             fileRepository.save(file);
             return new Response();
         }else  {

@@ -28,7 +28,7 @@ public class UserRequest {
     @Column(name="ACCESS_CODE", nullable = false)
     private String code;
 
-    @Column(name="ACCESS_TOKEN", nullable = false)
+    @Column(name="ACCESS_TOKEN", nullable = false, unique = true)
     private String token;
 
     @Temporal(TemporalType.TIMESTAMP)

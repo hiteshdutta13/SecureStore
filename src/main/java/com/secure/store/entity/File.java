@@ -30,7 +30,7 @@ public class File {
     @Column(name="ORIGINAL_NAME", nullable = false)
     private String originalName;
 
-    @Column(name="PATH", nullable = false)
+    @Column(name="PATH", nullable = false, columnDefinition = "TEXT")
     private String path;
 
     @Enumerated(EnumType.STRING)
