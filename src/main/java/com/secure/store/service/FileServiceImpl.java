@@ -9,6 +9,7 @@ import com.secure.store.modal.Response;
 import com.secure.store.modal.SharedFileDTO;
 import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
+import com.secure.store.util.EntityToModelTransformer;
 import com.secure.store.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,26 +196,21 @@ public class FileServiceImpl extends GlobalService implements FileService {
     @Override
     public FileDTO get(Long id) {
         File file = fileRepository.getReferenceById(id);
-        var fileDTO = new FileDTO();
-        fileDTO.setId(file.getId());
-        fileDTO.setName(file.getName());
-        fileDTO.setType(file.getContentType());
-        fileDTO.setOriginalName(file.getOriginalName());
-        fileDTO.setSize(file.getSize());
-        fileDTO.setPath(file.getPath());
-        fileDTO.setExtension(file.getName().split("\\.")[1]);
-        fileDTO.setOriginalName(file.getOriginalName().split("\\."+fileDTO.getExtension())[0]);
-        if(file.getFolder() != null) {
-            fileDTO.setFolderId(file.getFolder().getId());
-        }
-        fileDTO.setCreatedDateTime(DateTimeUtil.formatDate(file.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        fileDTO.setUpdatedDateTime(DateTimeUtil.formatDate(file.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        return fileDTO;
+        return EntityToModelTransformer.transform(file);
     }
 
     @Override
     public Response delete(Long id) {
         File file = fileRepository.getReferenceById(id);
+        var existingSharedFile = sharedFileRepository.findBy(id);
+        if(existingSharedFile.isPresent()) {
+            var sharedFile = existingSharedFile.get();
+            List<SharedFileToUser> sharedFileToUsers = sharedFile.getSharedFileToUsers();
+            sharedFileToUsers.forEach(sharedFileToUser -> {
+                sharedFileToUserRepository.deleteById(sharedFileToUser.getId());
+            });
+            sharedFileRepository.deleteById(sharedFile.getId());
+        }
         file.setStatus(Status.Deleted);
         file.setUpdatedDateTime(DateTimeUtil.currentDateTime());
         fileRepository.save(file);

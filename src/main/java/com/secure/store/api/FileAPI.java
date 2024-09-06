@@ -21,8 +21,11 @@ public class FileAPI {
     @ResponseBody
     @PostMapping(value = "/upload/{id}")
     public ResponseEntity<Response> upload( @PathVariable("id") Long folderId,
-                                            @RequestParam("file") MultipartFile file) {
-        var response = fileService.upload(folderId, file);
+                                            @RequestParam("files") MultipartFile[] files) {
+        var response = new Response();
+        for (MultipartFile file : files) {
+            response = fileService.upload(folderId, file);
+        }
         if(response.isSuccess()) {
             return ResponseEntity.ok(response);
         }else {

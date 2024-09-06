@@ -105,6 +105,14 @@
                    <c:when test="${page eq 'bin'}">
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
                           <ol class="breadcrumb border-bottom p-2">Bin</ol>
+                          <div class="row">
+                            <div class="col-sm-12">
+                                <a href="javascript:;" class="fw-normal text-decoration-none select-all">Select All</a>
+                                <a href="javascript:;" class="fw-normal text-decoration-none unselect-all d-none">Select All</a> |
+                                <a href="javascript:;" class="fw-normal text-decoration-none restore-all">Restore bin</a> |
+                                <a href="javascript:;" class="fw-normal text-decoration-none delete-all">Empty bin</a>
+                            </div>
+                          </div>
                         </div>
                         <div class="card-body p-3"><jsp:include page="bin.jsp"/></div>
                    </c:when>
@@ -156,7 +164,7 @@
           </div>
           <div class="modal-body">
               <div class="mb-3 needs-validation pt-3">
-                <input type="file" class="form-control border-dark" id="fileSelected" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.xls,.xlsx" required />
+                <input type="file" class="form-control border-dark" id="fileSelected" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.xls,.xlsx" required multiple/>
                 <div class="invalid-feedback">Please choose a file or image.</div>
               </div>
           </div>

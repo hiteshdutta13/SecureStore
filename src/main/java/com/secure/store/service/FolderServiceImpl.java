@@ -7,6 +7,7 @@ import com.secure.store.entity.util.Status;
 import com.secure.store.modal.*;
 import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
+import com.secure.store.util.EntityToModelTransformer;
 import com.secure.store.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,7 +99,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
     public DriveDTO findAll() {
         var driveDTO = new DriveDTO();
         driveDTO.setFolders(this.transformList(folderRepository.findBy(this.getUserId())));
-        driveDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId(), Status.Active)));
+        driveDTO.setFiles(EntityToModelTransformer.transform(fileRepository.findBy(this.getUserId(), Status.Active)));
         driveDTO.setView("grid");
         Optional<Setting> optionalSetting = settingRepository.findBy(SettingConstants.DRIVE_DEFAULT_VIEW, this.getUserId());
         optionalSetting.ifPresent(setting -> driveDTO.setView(setting.getValue()));
@@ -131,7 +132,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         var files = new ArrayList<SharedFileDTO>();
         Optional.ofNullable(sharedFiles).orElseGet(Collections::emptyList).forEach(sharedFile -> {
             var sharedFileDTO = new SharedFileDTO();
-            sharedFileDTO.setFile(this.transform(sharedFile.getFile()));
+            sharedFileDTO.setFile(EntityToModelTransformer.transform(sharedFile.getFile()));
             sharedFileDTO.setId(sharedFile.getId());
             sharedFileDTO.setSharedBy(this.transform(sharedFile.getSharedBy()));
             var listOfUsers = new ArrayList<SharedFileToUserDTO>();
@@ -151,34 +152,13 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         Optional.ofNullable(sharedFileToUsers).orElseGet(Collections::emptyList).forEach(sharedFileToUser -> {
             var sharedFileDTO = new SharedFileDTO();
             var sharedFile = sharedFileToUser.getSharedFile();
-            sharedFileDTO.setFile(this.transform(sharedFile.getFile()));
+            sharedFileDTO.setFile(EntityToModelTransformer.transform(sharedFile.getFile()));
             sharedFileDTO.setId(sharedFile.getId());
             sharedFileDTO.setSharedBy(this.transform(sharedFile.getSharedBy()));
             sharedFileDTO.setSharedDateTime(DateTimeUtil.formatDate(sharedFileToUser.getSharedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
             files.add(sharedFileDTO);
         });
         return files;
-    }
-    FileDTO transform(File file) {
-        var fileDTO = new FileDTO();
-        fileDTO.setId(file.getId());
-        fileDTO.setName(file.getName());
-        fileDTO.setType(file.getContentType());
-        fileDTO.setExtension(file.getName().split("\\.")[1]);
-        fileDTO.setOriginalName(file.getOriginalName().split("\\."+fileDTO.getExtension())[0]);
-        fileDTO.setSize(file.getSize());
-        fileDTO.setPath(file.getPath());
-        if(file.getFolder() != null) {
-            fileDTO.setFolderId(file.getFolder().getId());
-        }
-        fileDTO.setCreatedDateTime(DateTimeUtil.formatDate(file.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        fileDTO.setUpdatedDateTime(DateTimeUtil.formatDate(file.getUpdatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
-        return fileDTO;
-    }
-    List<FileDTO> transform(List<File> files) {
-        var fileDTOs = new ArrayList<FileDTO>();
-        Optional.ofNullable(files).orElseGet(Collections::emptyList).forEach(file -> fileDTOs.add(this.transform(file)));
-        return fileDTOs;
     }
     List<FolderDTO> transformList(List<Folder> folders) {
        var folderDTOS = new ArrayList<FolderDTO>();
@@ -217,7 +197,7 @@ public class FolderServiceImpl extends GlobalService implements FolderService {
         folderDTO.setId(folder.getId());
         folderDTO.setName(folder.getName());
         folderDTO.setPath(folder.getPath());
-        folderDTO.setFiles(this.transform(fileRepository.findBy(this.getUserId(), folder.getId(), Status.Active)));
+        folderDTO.setFiles(EntityToModelTransformer.transform(fileRepository.findBy(this.getUserId(), folder.getId(), Status.Active)));
         folderDTO.setCreatedDateTime(DateTimeUtil.formatDate(folder.getCreatedDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setUpdatedDateTime(DateTimeUtil.formatDate(folder.getUpdateDateTime(), DateTimeUtil.DATE_TIME_FORMAT_UI));
         folderDTO.setSubFolders(transformList(folderRepository.findBy(this.getUserId(), folder.getId())));

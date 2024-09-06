@@ -19,4 +19,7 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     @Query("SELECT d FROM File d WHERE d.folder.id = :folderId AND d.status = :status")
     List<File> findByFolder(@Param("folderId") Long folderId, @Param("status") Status status);
+
+    @Query("SELECT d FROM File d WHERE d.user.id = :userId AND d.status = :status")
+    List<File> findByUser(@Param("userId") Long userId, @Param("status") Status status);
 }

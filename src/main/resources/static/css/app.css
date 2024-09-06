@@ -19,7 +19,7 @@
     height: 700px !important;
     overflow: overlay;
 }
-.form-control {
+.form-control, .form-select {
     border-color: #157347 !important;
 }
 .modal-content {
@@ -30,4 +30,12 @@
 }
 .progress {
     border: 1px solid #198754 !important;
+    border-radius: 0 !important;
+}
+.folder-box {
+    background-color: #2b272c24;
+    border-color: #2b272c24;
+}
+.bin-container .form-check {
+    /**padding-left: 5px !important;*/
 }
