@@ -13,12 +13,12 @@
   <link rel="stylesheet" href="${contextPath}/css/thirdparty/sweetalert2.min.css">
   <link rel="stylesheet" href="${contextPath}/css/app.css">
   <link rel="shortcut icon" href="${contextPath}/images/secure-store-icon.webp" />
-  <script src="${contextPath}/js/bootstrap.bundle.min.js"></script>
-  <script src="${contextPath}/js/jquery.min.js"></script>
-  <script src="${contextPath}/js/ajax.handler.min.js"></script>
-  <script src="${contextPath}/js/thirdparty/pdf.min.js"></script>
-  <script src="${contextPath}/js/thirdparty/mammoth.browser.min.js"></script>
-  <script src="${contextPath}/js/thirdparty/xlsx.core.min.js"></script>
+  <script rel="preload" as="script" src="${contextPath}/js/bootstrap.bundle.min.js"></script>
+  <script rel="preload" as="script" src="${contextPath}/js/jquery.min.js"></script>
+  <script rel="preload" as="script" src="${contextPath}/js/ajax.handler.min.js"></script>
+  <script rel="preload" as="script" src="${contextPath}/js/thirdparty/pdf.min.js"></script>
+  <script rel="preload" as="script" src="${contextPath}/js/thirdparty/mammoth.browser.min.js"></script>
+  <script rel="preload" as="script" src="${contextPath}/js/thirdparty/xlsx.core.min.js"></script>
 </head>
 <body class="bg-light bg-gradient">
     <div class="container" id="container" data-context="${contextPath}" data-page="${page}">
@@ -90,7 +90,7 @@
                             <i class="fa fa-hard-drive text-success"></i> My Drive
                             <div class="float-end d-none d-sm-block">
                                 <button class="btn btnView btn-xs" title="List View" data-value="list"><i class="fa fa-bars"></i></button>
-                                <button class="btn btnView btn-xs active" title="Grid View" data-value="grid"><i class="fa fa-th-large"></i></button>
+                                <button class="btn btnView btn-xs" title="Grid View" data-value="grid"><i class="fa fa-th-large"></i></button>
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -130,7 +130,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-ellipsis" id="createFolderModalLabel">Create Folder</h5>
+            <h5 class="modal-title text-ellipsis" id="createFolderModalLabel"><i class="fa fa-folder-plus text-success"></i> Create Folder</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -151,7 +151,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-ellipsis" id="uploadFileModalLabel">Upload File</h5>
+            <h5 class="modal-title text-ellipsis" id="uploadFileModalLabel"><i class="fa fa-file-upload text-success"></i> Upload File</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
