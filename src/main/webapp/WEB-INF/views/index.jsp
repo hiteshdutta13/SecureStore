@@ -105,16 +105,18 @@
                    <c:when test="${page eq 'bin'}">
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
                           <ol class="breadcrumb border-bottom p-2">Bin</ol>
-                          <div class="row">
-                            <div class="col-sm-12">
-                                <a href="javascript:;" class="fw-normal text-decoration-none select-all">Select All</a>
-                                <a href="javascript:;" class="fw-normal text-decoration-none unselect-all d-none">Select All</a> |
-                                <a href="javascript:;" class="fw-normal text-decoration-none restore-all">Restore bin</a> |
-                                <a href="javascript:;" class="fw-normal text-decoration-none delete-all">Empty bin</a>
-                            </div>
-                          </div>
                         </div>
-                        <div class="card-body p-3"><jsp:include page="bin.jsp"/></div>
+                        <div class="row event-row d-none">
+                            <div class="col-sm-12 ps-4">
+                                <a href="javascript:;" class="btn btn-primary btn-sm select-all">Select All</a>
+                                <a href="javascript:;" class="btn btn-primary btn-sm unselect-all d-none">Unselect All</a>
+                                <a href="javascript:;" class="btn btn-success btn-sm restore-all">Restore bin</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm delete-all">Empty bin</a>
+                                <a href="javascript:;" class="btn btn-success btn-sm restore-selected d-none">Restore Selected</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm delete-selected d-none">Delete Selected</a>
+                            </div>
+                         </div>
+                        <div class="card-body"><jsp:include page="bin.jsp"/></div>
                    </c:when>
                    <c:when test="${page eq 'settings'}">
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
