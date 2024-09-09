@@ -13,6 +13,7 @@ import com.secure.store.util.TokenUtil;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -121,7 +122,7 @@ public class UserServiceImpl extends GlobalService implements UserService {
             planDTO.setStorageType(plan.getStorageType().toString());
             planDTO.setStatus(plan.getStatus().toString());
             userDTO.setPlan(planDTO);
-            List<File> files = fileRepository.findBy(this.getUserId(), Status.Active);
+            List<File> files = fileRepository.findBy(this.getUserId(), Status.Active, Sort.by(Sort.Direction.DESC, "updatedDateTime"));
             AtomicLong atomicLong = new AtomicLong();
             Optional.ofNullable(files).orElseGet(Collections::emptyList).forEach(file -> {
                 atomicLong.set(atomicLong.get()+file.getSize());

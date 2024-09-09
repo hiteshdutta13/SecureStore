@@ -151,8 +151,8 @@
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btnCancelFolder" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-success btnCreateFolder">Create</button>
+            <button type="button" class="btn btn-secondary" id="btnCancelFolder" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-success" id="btnCreateFolder">Create</button>
           </div>
         </div>
       </div>
@@ -166,13 +166,13 @@
           </div>
           <div class="modal-body">
               <div class="mb-3 needs-validation pt-3">
-                <input type="file" class="form-control border-dark" id="fileSelected" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.xls,.xlsx" required multiple/>
+                <input type="file" class="form-control border-dark" id="uploadFiles" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.xls,.xlsx" required multiple/>
                 <div class="invalid-feedback">Please choose a file or image.</div>
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btnCancelFile" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-success btnUploadFile">Upload</button>
+            <button type="button" class="btn btn-secondary" id="btnCancelFile" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-success" id="btnUploadFile">Upload</button>
           </div>
         </div>
       </div>

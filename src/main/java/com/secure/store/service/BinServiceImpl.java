@@ -11,6 +11,7 @@ import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.EntityToModelTransformer;
 import com.secure.store.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class BinServiceImpl extends GlobalService implements BinService {
     @Override
     public BinDTO findAll() {
         var bin = new BinDTO();
-        bin.setFiles(EntityToModelTransformer.transform(fileRepository.findByUser(this.getUserId(), Status.Deleted)));
+        bin.setFiles(EntityToModelTransformer.transform(fileRepository.findByUser(this.getUserId(), Status.Deleted, Sort.by(Sort.Direction.DESC, "updatedDateTime"))));
         return bin;
     }
 
@@ -54,7 +55,7 @@ public class BinServiceImpl extends GlobalService implements BinService {
 
     @Override
     public Response deleteAll() {
-        this.delete(fileRepository.findByUser(this.getUserId(), Status.Deleted).stream().map(File::getId).collect(Collectors.toList()));
+        this.delete(fileRepository.findByUser(this.getUserId(), Status.Deleted, Sort.by(Sort.Direction.DESC, "updatedDateTime")).stream().map(File::getId).collect(Collectors.toList()));
         return new Response();
     }
 
@@ -77,7 +78,7 @@ public class BinServiceImpl extends GlobalService implements BinService {
 
     @Override
     public Response restoreAll() {
-        this.restore(fileRepository.findByUser(this.getUserId(), Status.Deleted).stream().map(File::getId).collect(Collectors.toList()));
+        this.restore(fileRepository.findByUser(this.getUserId(), Status.Deleted, Sort.by(Sort.Direction.DESC, "updatedDateTime")).stream().map(File::getId).collect(Collectors.toList()));
         return new Response();
     }
 }

@@ -1,6 +1,7 @@
 package com.secure.store.repository;
 
 import com.secure.store.entity.Folder;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface FolderRepository extends JpaRepository<Folder, Long> {
     @Query("SELECT f FROM Folder f WHERE f.user.id = :userId AND f.parent IS NULL")
-    List<Folder> findBy(@Param("userId") Long userId);
+    List<Folder> findBy(@Param("userId") Long userId, Sort sort);
 
     @Query("SELECT f FROM Folder f WHERE f.user.id = :userId AND f.parent IS NULL AND f.name = :name")
     Optional<Folder> findBy(@Param("userId") Long userId, @Param("name") String name);
@@ -23,5 +24,5 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
     List<Folder> findBy(@Param("userId") Long userId, @Param("parentId") Long parentId);
 
     @Query("SELECT f FROM Folder f WHERE f.parent.id = :parentId")
-    List<Folder> findByParent(@Param("parentId") Long parentId);
+    List<Folder> findByParent(@Param("parentId") Long parentId, Sort sort);
 }
