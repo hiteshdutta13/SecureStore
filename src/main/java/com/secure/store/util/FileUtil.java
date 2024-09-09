@@ -65,4 +65,8 @@ public class FileUtil {
     public static String docFilePath(String preFix) {
         return preFix + "/SecureStore/Users";
     }
+
+    public static String fileLocation(String preFix, Long userId, com.secure.store.entity.File file) {
+        return FileUtil.docFilePath(preFix, userId) + file.getPath() + (file.getPath().trim().equals(FileUtil.FORWARD_SLASH) ? "":FileUtil.FORWARD_SLASH) + file.getName();
+    }
 }

@@ -11,8 +11,6 @@ import com.secure.store.repository.*;
 import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.EntityToModelTransformer;
 import com.secure.store.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -32,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl extends GlobalService implements FileService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    //Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     FolderRepository folderRepository;
     @Autowired
@@ -153,8 +151,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
                         userId = optionalSharedFile.get().getSharedBy().getId();
                     }
                 }
-                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals(FileUtil.FORWARD_SLASH) ? "":FileUtil.FORWARD_SLASH) + file.getName();
-                Path path = Paths.get(filePath);
+                Path path = Paths.get(FileUtil.fileLocation(preFix.get().getValue(), userId, file));
                 return Files.readAllBytes(path);
             }catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -175,10 +172,8 @@ public class FileServiceImpl extends GlobalService implements FileService {
                         userId = optionalSharedFile.get().getSharedBy().getId();
                     }
                 }
-                String filePath = FileUtil.docFilePath(preFix.get().getValue(), userId) + file.getPath() + (file.getPath().trim().equals(FileUtil.FORWARD_SLASH) ? "" : FileUtil.FORWARD_SLASH) + file.getName();
-                logger.info("download file from location: " + filePath);
-                Path path = Paths.get(filePath);
-                Resource resource = new UrlResource(path.toString());
+                Path path = Paths.get(FileUtil.fileLocation(preFix.get().getValue(), userId, file)).normalize();
+                Resource resource = new UrlResource(path.toUri());
                 if (resource.exists()) {
                     return ResponseEntity.ok()
                             .contentType(MediaType.parseMediaType(file.getContentType()))
@@ -206,9 +201,7 @@ public class FileServiceImpl extends GlobalService implements FileService {
         if(existingSharedFile.isPresent()) {
             var sharedFile = existingSharedFile.get();
             List<SharedFileToUser> sharedFileToUsers = sharedFile.getSharedFileToUsers();
-            sharedFileToUsers.forEach(sharedFileToUser -> {
-                sharedFileToUserRepository.deleteById(sharedFileToUser.getId());
-            });
+            sharedFileToUsers.forEach(sharedFileToUser -> sharedFileToUserRepository.deleteById(sharedFileToUser.getId()));
             sharedFileRepository.deleteById(sharedFile.getId());
         }
         file.setStatus(Status.Deleted);

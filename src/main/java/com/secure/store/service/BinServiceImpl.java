@@ -1,12 +1,15 @@
 package com.secure.store.service;
 
+import com.secure.store.constant.GlobalConstants;
 import com.secure.store.entity.File;
 import com.secure.store.entity.util.Status;
 import com.secure.store.modal.BinDTO;
 import com.secure.store.modal.Response;
 import com.secure.store.repository.FileRepository;
+import com.secure.store.repository.GlobalRepository;
 import com.secure.store.util.DateTimeUtil;
 import com.secure.store.util.EntityToModelTransformer;
+import com.secure.store.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,10 @@ public class BinServiceImpl extends GlobalService implements BinService {
 
     @Autowired
     FileRepository fileRepository;
+
+    @Autowired
+    GlobalRepository globalRepository;
+
     @Override
     public BinDTO findAll() {
         var bin = new BinDTO();
@@ -27,6 +34,12 @@ public class BinServiceImpl extends GlobalService implements BinService {
 
     @Override
     public Response delete(Long id) {
+        File file = fileRepository.getReferenceById(id);
+        var preFix = globalRepository.findBy(GlobalConstants.KEYWORD_DOCUMENT_PATH_PREFIX);
+        if(preFix.isPresent()) {
+            String filePath = FileUtil.docFilePath(preFix.get().getValue(), file.getUser().getId()) + file.getPath() + (file.getPath().trim().equals(FileUtil.FORWARD_SLASH) ? "" : FileUtil.FORWARD_SLASH) + file.getName();
+            FileUtil.delete(filePath, file.getName());
+        }
         fileRepository.deleteById(id);
         return new Response();
     }

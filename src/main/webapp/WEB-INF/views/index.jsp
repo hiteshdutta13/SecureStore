@@ -116,7 +116,7 @@
                                 <a href="javascript:;" class="btn btn-danger btn-sm delete-selected d-none">Delete Selected</a>
                             </div>
                          </div>
-                        <div class="card-body"><jsp:include page="bin.jsp"/></div>
+                        <div class="card-body p-3"><jsp:include page="bin.jsp"/></div>
                    </c:when>
                    <c:when test="${page eq 'settings'}">
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
