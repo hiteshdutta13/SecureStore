@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
@@ -18,15 +19,14 @@ public class PageController {
     PlanService planService;
 
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
-        model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "default");
-        return PageConstants.PAGE_INDEX;
+    public String home(Model model, @RequestParam(value = "folderId", required = false, defaultValue = "-1") Long folderId) {
+        return this.drive(model, folderId);
     }
     @GetMapping("/drive")
-    public String drive(Model model) {
+    public String drive(Model model, @RequestParam(value = "folderId", required = false, defaultValue = "-1") Long folderId) {
         model.addAttribute(PageConstants.ATTRIBUTE_USER, userService.getActive());
         model.addAttribute(PageConstants.ATTRIBUTE_PAGE, "default");
+        model.addAttribute(PageConstants.ATTRIBUTE_SELECTED_FOLDER_Id, (folderId != null && folderId > 0 ? folderId: -1));
         return PageConstants.PAGE_INDEX;
     }
 

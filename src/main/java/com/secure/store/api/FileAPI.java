@@ -56,32 +56,34 @@ public class FileAPI {
     }
 
     @ResponseBody
-    @RequestMapping (value="/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping (value="/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] image(@PathVariable("id") Long id,
                         @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }
 
     @ResponseBody
-    @RequestMapping (value="/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping (value="/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     public byte[] pdf(@PathVariable("id") Long id,
                       @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }
 
     @ResponseBody
-    @RequestMapping (value="/other/{id}")
+    @GetMapping (value="/other/{id}")
     public byte[] other(@PathVariable("id") Long id,
                        @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.getFile(id, shared);
     }
 
+    @ResponseBody
     @GetMapping(value = "/download/{id}")
     public ResponseEntity<Resource> download(@PathVariable("id") Long id,
                                              @RequestParam(value = "shared", required = false, defaultValue = "false") boolean shared) {
         return fileService.download(id, shared);
     }
 
+    @ResponseBody
     @GetMapping(value = "/{id}")
     public ResponseEntity<Response> get(@PathVariable("id") Long id) {
         var response = new Response();
@@ -89,10 +91,28 @@ public class FileAPI {
         return ResponseEntity.ok(response);
     }
 
+    @ResponseBody
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Response> delete(@PathVariable("id") Long id) {
         var response = new Response();
         response.setData(fileService.delete(id));
+        return ResponseEntity.ok(response);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/{id}/shared/detail")
+    public ResponseEntity<Response> sharedWith( @PathVariable("id") Long fileId) {
+        var response = new Response();
+        response.setData(fileService.sharedWith(fileId));
+        return ResponseEntity.ok(response);
+    }
+
+    @ResponseBody
+    @DeleteMapping(value = "/revoke/access/{sharedFileId}/{sharedFileToUserId}")
+    public ResponseEntity<Response> revokeAccess(@PathVariable("sharedFileId") Long sharedFileId,
+                                                 @PathVariable("sharedFileToUserId") Long sharedFileToUserId) {
+        var response = new Response();
+        response.setData(fileService.revokeAccess(sharedFileId, sharedFileToUserId));
         return ResponseEntity.ok(response);
     }
 

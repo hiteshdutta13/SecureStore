@@ -128,7 +128,7 @@
                         <div aria-label="breadcrumb" class="row mx-0 px-2">
                           <ol class="breadcrumb border-bottom p-2"><!--Dynamically --></ol>
                         </div>
-                        <div class="card-body p-3 driveContent"><!-- Dynamically will be created --> </div>
+                        <div class="card-body p-3 driveContent" data-folder-loaded="${selectedFolderId}"><!-- Dynamically will be created --> </div>
                     </c:otherwise>
                 </c:choose>
               </div>

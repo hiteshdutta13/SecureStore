@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -220,5 +221,21 @@ public class FileServiceImpl extends GlobalService implements FileService {
         }else  {
             return new Response(false);
         }
+    }
+
+    @Override
+    public SharedFileDTO sharedWith(Long fileId) {
+        Optional<SharedFile> sharedFile = sharedFileRepository.findBy(fileId);
+        return sharedFile.map(EntityToModelTransformer::transform).orElse(null);
+    }
+
+    @Override
+    public Response revokeAccess(Long sharedFileId, Long sharedFileToUserId) {
+        sharedFileToUserRepository.deleteById(sharedFileToUserId);
+        List<SharedFileToUser> sharedFileToUsers = sharedFileRepository.getReferenceById(sharedFileId).getSharedFileToUsers();
+        if(CollectionUtils.isEmpty(sharedFileToUsers)) {
+            sharedFileRepository.deleteById(sharedFileId);
+        }
+        return new Response();
     }
 }

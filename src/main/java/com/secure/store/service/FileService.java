@@ -15,4 +15,6 @@ public interface FileService {
     FileDTO get(Long id);
     Response delete(Long id);
     Response rename(FileDTO fileDTO);
+    SharedFileDTO sharedWith(Long fileId);
+    Response revokeAccess(Long sharedFileId, Long sharedFileToUserId);
 }
