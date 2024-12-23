@@ -1,5 +1,6 @@
 <p>SecureStore is an innovative cloud-based secure storage solution designed to provide users with a reliable, safe, and convenient way to store various types of files and images. This service specifically excludes the storage of video and audio files, focusing instead on documents, images, and other non-media file types. SecureStore ensures that your files are protected by personal credentials, allowing you to access them from anywhere and at any time.</p>
-<h4>Key Features</h4>
+<img src="images/secure-store-play.gif" class="img-thumbnail" alt="Secure Store"/>
+<h5>Key Features</h5>
 <ul>
     <li><span class="fw-medium">Secure Storage:</span>
         <ul>
