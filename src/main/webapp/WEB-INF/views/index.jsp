@@ -28,12 +28,10 @@
               <img src="${contextPath}/images/secure-store-icon.webp" alt="Secure Store" style="width:50px;" /> <span class="text-success">Secure</span> <span class="text-dark">Store</span>
             </a>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
-                <li class="nav-item dropdown d-block d-sm-none">
-                     Hi, ${user.firstName}
-                </li>
+                <li class="nav-item dropdown d-block d-sm-none">Hi, ${user.firstName}! <a class="text-decoration-none text-dark" href="${contextPath}/logout"><i class="fas fa-sign-out-alt fa-fw text-success"></i></a></li>
                 <li class="nav-item dropdown d-none d-sm-block">
                   <a class="nav-link text-dark dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                       Hi, ${user.firstName}
+                       Hi, ${user.firstName}!
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="${contextPath}/drive/settings"><i class="fas fa-cog fa-fw"></i> Settings</a></li>
@@ -58,7 +56,7 @@
                    </div>
                    <hr>
                </c:if>
-               <ul class="list-group list-group-flush mb-2">
+               <ul class="list-group list-group-flush mb-2 d-none d-sm-block">
                  <li class="list-group-item rounded-5 ${page eq 'default' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive"><i class="fa fa-hard-drive text-success"></i> My Drive</a></li>
                  <li class="list-group-item rounded-5 ${page eq 'settings' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/settings"><i class="fa fa-cog fa-fw text-success"></i> Settings</a></li>
                  <li class="list-group-item rounded-5 ${page eq 'bin' ? 'active':''}"><a class="text-decoration-none text-dark" href="${contextPath}/drive/bin"><i class="fa-solid fa-trash-can text-success"></i> Bin</a></li>
